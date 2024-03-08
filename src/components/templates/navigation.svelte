@@ -38,10 +38,10 @@
 			label: 'Clientes'
 		},
 		{
-			href: '/citys_departaments',
+			href: '/cities_departments',
 			activated: false,
 			icon: '',
-			label: 'Cuidades y Departamentos'
+			label: 'Cuidades y Departmentos'
 		}
 	];
 

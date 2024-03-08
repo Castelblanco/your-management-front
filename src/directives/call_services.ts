@@ -1,9 +1,10 @@
-import { type TMapper } from '$common/base/Imappers';
+import { type TAdapters } from '$common/base/adapters';
 import { ApiError } from '$common/errors/api_error';
 import { ApiResponses } from '$common/responses/api_response';
 import { type TListResponses } from '$common/responses/list_response';
+import { snackbarStore } from '$stores/snackbar';
 import { type AxiosResponse } from 'axios';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 
 type TServiceResponse<T> = {
 	response: Promise<AxiosResponse<T>>;
@@ -16,50 +17,61 @@ export const callServices = () => {
 	let controller: AbortController;
 
 	const callEndpointList = async <E, D>(
-		axiosCall: TServiceResponse<TListResponses<D>>,
-		mapper: TMapper<E, D>
+		call: TServiceResponse<TListResponses<D>>,
+		adapters: TAdapters<E, D>
 	) => {
 		loading.set(true);
-		if (axiosCall.controller) controller = axiosCall.controller;
-
+		if (call.controller) controller = call.controller;
 		try {
-			const { data } = await axiosCall.response;
-			return data.items.map(mapper.apiToDom);
+			const { data } = await call.response;
+			return data.items.map(adapters.apiToDom);
 		} catch (err: any) {
-			const error = err?.response?.data;
-			errorMessage.set(new ApiError(error));
+			const error = new ApiError(err?.response?.data);
+			errorMessage.set(error);
+			snackbarStore.change({
+				title: error.message,
+				closeAction: true
+			});
+			throw error;
 		} finally {
 			loading.set(false);
 		}
 	};
 
 	const callEndpointApi = async <E, D>(
-		axiosCall: TServiceResponse<ApiResponses<D>>,
-		mapper: TMapper<E, D>
-	) => {
+		call: TServiceResponse<ApiResponses<D>>,
+		adapter: TAdapters<E, D>
+	): Promise<E> => {
 		loading.set(true);
-		if (axiosCall.controller) controller = axiosCall.controller;
-
+		if (call.controller) controller = call.controller;
 		try {
-			const { data } = await axiosCall.response;
-			return mapper.apiToDom(data.item);
+			const { data } = await call.response;
+			return adapter.apiToDom(data.item);
 		} catch (err: any) {
-			const error = err?.response?.data;
-			errorMessage.set(new ApiError(error));
+			const error = new ApiError(err?.response?.data);
+			errorMessage.set(error);
+			snackbarStore.change({
+				title: error.message,
+				closeAction: true
+			});
+			throw error;
 		} finally {
 			loading.set(false);
 		}
 	};
 
-	const callEndpoint = async <D>(axiosCall: TServiceResponse<ApiResponses<D>>) => {
+	const callEndpoint = async <D>(call: TServiceResponse<ApiResponses<D>>) => {
 		loading.set(true);
-		if (axiosCall.controller) controller = axiosCall.controller;
-
+		if (call.controller) controller = call.controller;
 		try {
-			await axiosCall.response;
+			await call.response;
 		} catch (err: any) {
-			const error = err?.response?.data;
-			errorMessage.set(new ApiError(error));
+			const error = new ApiError(err?.response?.data);
+			errorMessage.set(error);
+			snackbarStore.change({
+				title: error.message,
+				closeAction: true
+			});
 		} finally {
 			loading.set(false);
 		}

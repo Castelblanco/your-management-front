@@ -5,7 +5,7 @@ type TAppTheme = 'dark' | 'light';
 const theme = localStorage.getItem('app_theme');
 
 const createAppTheme = () => {
-	const { update, subscribe } = writable<TAppTheme>((theme as TAppTheme) || 'dark');
+	const { update, subscribe, set } = writable<TAppTheme>((theme as TAppTheme) || 'dark');
 
 	const toogle = () => update((pre) => (pre === 'dark' ? 'light' : 'dark'));
 
@@ -15,6 +15,7 @@ const createAppTheme = () => {
 
 	return {
 		toogle,
+		set,
 		subscribe
 	};
 };

@@ -8,7 +8,7 @@
 	export let style: string | undefined = undefined;
 </script>
 
-<Button {style} aria-disabled={disabled} {color} {variant} on:click>
+<Button {style} {disabled} {color} {variant} on:click>
 	<Label>
 		<slot />
 	</Label>

@@ -1,4 +1,4 @@
-export type TMapper<TDOM, TAPI> = {
+export type TAdapters<TDOM, TAPI> = {
 	apiToDom: (item: TAPI) => TDOM;
 	domToApi: (item: TDOM) => TAPI;
 };

@@ -1,12 +1,11 @@
 @use 'sass:color';
 
 @use '@material/theme/color-palette';
-
-// Svelte Colors! (Dark Theme)
 @use '@material/theme/index' as theme with (
-	$primary: color-palette.$grey-800,
-	$secondary: color.scale(#676778, $whiteness: -10%),
-	$surface: color.adjust(color-palette.$grey-900, $blue: +4),
+	$primary: color-palette.$grey-700,
+	$secondary: #fff,
+	// $surface: color.adjust(color-palette.$grey-900, $blue: +4),
+	$surface: color-palette.$grey-900,
 	$background: #000,
 	$error: color-palette.$red-700
 );
@@ -15,6 +14,14 @@ html,
 body {
 	background-color: #000;
 	color: theme.$on-surface;
+}
+
+input {
+	color: #fff;
+
+	&::placeholder {
+		color: #eee !important;
+	}
 }
 
 a {

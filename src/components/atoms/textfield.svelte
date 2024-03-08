@@ -5,7 +5,7 @@
 	import CharacterCounter from '@smui/textfield/character-counter';
 	import type { HTMLInputTypeAttribute } from 'svelte/elements';
 
-	export let label = '';
+	export let label: string | undefined = undefined;
 	export let type: HTMLInputTypeAttribute = 'text';
 	export let variant: 'standard' | 'filled' | 'outlined' | undefined = undefined;
 	export let style: string | undefined = undefined;
@@ -15,8 +15,6 @@
 	export let required: boolean | undefined = undefined;
 	export let disabled: boolean | undefined = undefined;
 	export let helperText: string | undefined = undefined;
-	export let iconLeft: string | undefined = undefined;
-	export let iconRight: string | undefined = undefined;
 	export let prefix: string | undefined = undefined;
 	export let suffix: string | undefined = undefined;
 	export let maxLength: number | undefined = undefined;
@@ -25,7 +23,6 @@
 
 <Textfield
 	{variant}
-	on:change
 	bind:value
 	{label}
 	{invalid}
@@ -38,16 +35,10 @@
 	input$maxlength={maxLength}
 	helperLine$style={helperLineStyle}
 >
-	{#if iconLeft}
-		<Icon class="material-icons" slot="leadingIcon">{iconLeft}</Icon>
-	{/if}
 	{#if helperText}
 		<HelperText slot="helper">Helper Text</HelperText>
 	{/if}
 	{#if rangeLength}
 		<CharacterCounter slot="helper">{rangeLength}</CharacterCounter>
-	{/if}
-	{#if iconRight}
-		<Icon class="material-icons" slot="trailingIcon">{iconRight}</Icon>
 	{/if}
 </Textfield>

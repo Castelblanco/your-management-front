@@ -27,7 +27,11 @@ const config = {
 			'$lib/*': 'src/lib/*',
 			'$constants/*': 'src/constants/*',
 			'$directives/*': 'src/directives/*',
-			'$common/*': 'src/common/*'
+			'$common/*': 'src/common/*',
+			'$models/*': 'src/models/*',
+			'$services/*': 'src/services/*',
+			'$tools/*': 'src/tools/*',
+			'$helpers/*': 'src/helpers/*'
 		},
 		version: {
 			name: pkg.version
