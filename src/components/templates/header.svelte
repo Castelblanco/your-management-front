@@ -16,7 +16,7 @@
 <TopAppBar variant="static">
 	<Row>
 		<Section>
-			<LogoBottomMenu />
+			<LogoBottomMenu logo="dark" />
 			<P style="margin-left: 20px; font">v.{version}</P>
 		</Section>
 		<Section style="justify-content: flex-end; padding-right: 30px;">

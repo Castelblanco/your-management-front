@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { navigatorStore } from '$stores/navigator';
 	import Drawer, { Content, Header, Scrim } from '@smui/drawer';
-	import List, { Item, Text, Graphic } from '@smui/list';
+	import List, { Item, Text } from '@smui/list';
 	import type { LayoutRouteId } from '../../routes/$types';
 	import LogoBottomMenu from '$organisms/logo_bottom_menu.svelte';
+	import { appTheme } from '$stores/app_theme';
 
 	type TNavigator = {
 		label: string;
@@ -12,7 +13,7 @@
 		activated: boolean;
 	};
 
-	const navigators: TNavigator[] = [
+	let navigators: TNavigator[] = [
 		{
 			href: '/guides_service',
 			activated: false,
@@ -36,39 +37,42 @@
 			activated: false,
 			icon: '',
 			label: 'Clientes'
-		},
-		{
-			href: '/cities_departments',
-			activated: false,
-			icon: '',
-			label: 'Cuidades y Departmentos'
 		}
 	];
 
-	const toggleNavigation = () => navigatorStore.toogle();
+	navigators = navigators.map((nav) => {
+		if (nav.href === location.pathname) nav.activated = true;
+		return nav;
+	});
 
 	const handleActive = (index: number) => {
 		navigators.forEach((nav, i) => {
 			if (i === index) nav.activated = true;
 			else nav.activated = false;
 		});
+
+		navigators = navigators;
 		navigatorStore.toogle();
 	};
 </script>
 
-<Drawer variant="modal" fixed style="top: 0; width: 300px;" open={$navigatorStore}>
+<Drawer variant="modal" fixed style="top: 0; width: 300px;" bind:open={$navigatorStore}>
 	<Header style="display: flex; align-items: center;">
-		<LogoBottomMenu />
+		<LogoBottomMenu logo={$appTheme} />
 	</Header>
 	<Content>
 		<List>
-			{#each navigators as { activated, href, icon, label }, i}
-				<Item href={href || undefined} on:click={() => handleActive(i)} {activated}>
-					<Graphic class="material-icons" aria-hidden="true">{icon}</Graphic>
+			{#each navigators as { activated, href, label }, i}
+				<Item
+					style="display: flex; justify-content: center;"
+					href={href || undefined}
+					on:click={() => handleActive(i)}
+					{activated}
+				>
 					<Text>{label}</Text>
 				</Item>
 			{/each}
 		</List>
 	</Content>
 </Drawer>
-<Scrim fixed={false} on:click={toggleNavigation} />
+<Scrim fixed={false} />
