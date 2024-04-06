@@ -26,7 +26,20 @@
 </svelte:head>
 
 <style>
+	:global(*) {
+		outline: none;
+	}
 	:global(body) {
 		margin: 0;
+	}
+	/* Chrome, Safari, Edge, Opera */
+	:global(input::-webkit-outer-spin-button, input::-webkit-inner-spin-button) {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	:global(input[type='number']) {
+		-moz-appearance: textfield;
 	}
 </style>

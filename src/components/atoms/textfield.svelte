@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import Icon from '@smui/textfield/icon';
 	import CharacterCounter from '@smui/textfield/character-counter';
 	import type { HTMLInputTypeAttribute } from 'svelte/elements';
 
@@ -11,6 +10,7 @@
 	export let style: string | undefined = undefined;
 	export let helperLineStyle: string | undefined = undefined;
 	export let value: string | number | null | undefined = '';
+	export let name: string | null | undefined = undefined;
 	export let invalid: boolean | undefined = undefined;
 	export let required: boolean | undefined = undefined;
 	export let disabled: boolean | undefined = undefined;
@@ -34,6 +34,7 @@
 	{type}
 	input$maxlength={maxLength}
 	helperLine$style={helperLineStyle}
+	input$name={name}
 >
 	{#if helperText}
 		<HelperText slot="helper">Helper Text</HelperText>

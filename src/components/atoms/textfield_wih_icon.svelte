@@ -9,6 +9,7 @@
 	export let type: HTMLInputTypeAttribute = 'text';
 	export let variant: 'standard' | 'filled' | 'outlined' | undefined = undefined;
 	export let style: string | undefined = undefined;
+	export let name: string | undefined = undefined;
 	export let helperLineStyle: string | undefined = undefined;
 	export let value: string | number | null | undefined = '';
 	export let invalid: boolean | undefined = undefined;
@@ -36,6 +37,7 @@
 	{type}
 	input$maxlength={maxLength}
 	helperLine$style={helperLineStyle}
+	input$name={name}
 >
 	<svelte:fragment slot="leadingIcon">
 		{#if iconLeft}

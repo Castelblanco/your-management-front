@@ -15,15 +15,15 @@
 </script>
 
 <Select
+	bind:value
 	{disabled}
 	{required}
 	{variant}
 	{invalid}
 	{label}
 	{style}
-	bind:value
 	color="primary"
-	on:change
+	menu$horizontallyCenteredOnViewport
 >
 	{#if icon}
 		<Icon class="material-icons" slot="leadingIcon">{icon}</Icon>

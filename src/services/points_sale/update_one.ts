@@ -7,7 +7,7 @@ export const buildUpdateOne = ({ http, abortController, adapter }: Dependencies)
 	const service = (point: TPointSaleDOM) => {
 		const controller = abortController();
 		return {
-			response: http.post<ApiResponses<TPointSaleAPI>>(
+			response: http.put<ApiResponses<TPointSaleAPI>>(
 				`/update-one/${point.id}`,
 				adapter.domToApi(point),
 				{

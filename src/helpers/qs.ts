@@ -5,5 +5,6 @@ export const qs = (object: object): string => {
 			if (value === undefined || value === '') return;
 			return `${key}=${value}`;
 		})
+		.filter(Boolean)
 		.join('&')}`;
 };

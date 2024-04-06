@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Map from '$templates/map.svelte';
-
 	let lngLat = { lat: 4.694351603367982, lon: -74.11896844417934 };
 
 	const logClick = () => {
