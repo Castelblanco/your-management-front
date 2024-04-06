@@ -8,7 +8,6 @@
 	import { onDestroy } from 'svelte';
 	import P from '$atoms/p.svelte';
 	import { statusCodeAdapters } from '$models/status_code/adapters';
-	import Textfield from '$atoms/textfield.svelte';
 	import TextfieldWithIcon from '$atoms/textfield_wih_icon.svelte';
 	import type { TSelectOption } from '$molecules/types/select';
 	import SelectNoHelpertext from '$molecules/select_no_helpertext.svelte';
@@ -18,18 +17,11 @@
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
 	import { STATUS_CODE } from '$constants/index';
 	import { validObjects } from '$helpers/index';
-	import type {
-		TUserDOM,
-		TUserFilterDOM,
-		TUserPointSaleDOM
-	} from '$models/users/entities';
+	import type { TUserDOM, TUserFilterDOM } from '$models/users/entities';
 	import { createOneUser, getAllUsers, updateOneUser } from '$services/users';
 	import { getAllUserRoles } from '$services/user_roles';
 	import { userAdapters } from '$models/users/adapters';
 	import { userRolesAdapters } from '$models/user_roles/adapters';
-	import Autocomplete from '$atoms/autocomplete.svelte';
-	import { getAllPointsSale } from '$services/points_sale';
-	import { pointsSaleAdapters } from '$models/points_sale/adapters';
 	import FormUser from '$templates/form_user.svelte';
 
 	const { callEndpointList, loading, callEndpointApi, cancelEndpoint } = callServices();
@@ -197,8 +189,6 @@
 				}),
 				userAdapters
 			);
-
-			console.log({ users });
 		} catch (e) {
 			console.log({ e });
 		}
@@ -233,8 +223,6 @@
 
 	const handleUpdateUser = async () => {
 		try {
-			console.log({ userEdit });
-
 			const updateUser = await callEndpointApi(updateOneUser(userEdit), userAdapters);
 			const index = users.findIndex(({ id }) => id === updateUser.id);
 			users.splice(index, 1, updateUser);
@@ -464,100 +452,6 @@
 		</Actions>
 	</Dialog>
 {/key}
-<!-- {#key showEdit}
-	<Dialog bind:open={showEdit} fullscreen surface$style="width: 100%">
-		<Header>
-			<Title>Detalle</Title>
-		</Header>
-		<SeparatorNotLine style="margin-top: 5px;" />
-		<Content>
-			<div class="new_user_inputs">
-				<Textfield
-					bind:value={userEdit.firstName}
-					required
-					style="width: 33%;"
-					variant="outlined"
-					label="Nombre"
-				/>
-				<Textfield
-					bind:value={userEdit.lastName}
-					required
-					style="width: 33%;"
-					variant="outlined"
-					label="Apellido"
-				/>
-				{#if userEdit.role}
-					<SelectNoHelpertext
-						bind:value={userEdit.role.id}
-						options={usersRoles}
-						variant="outlined"
-						label="Rol"
-						style="width: 33%;"
-						required
-					/>
-				{/if}
-			</div>
-			<div class="new_user_inputs">
-				{#if userEdit.pointSale}
-					<Autocomplete
-						bind:value={userEdit.pointSale}
-						variant="outlined"
-						required
-						onSearch={handleSearchPointSale}
-						getOptionLabel={handleFormatPointSale}
-						label="Punto de Venta"
-						style="width: 33%;"
-					/>
-				{/if}
-				<Textfield
-					bind:value={userEdit.phone}
-					required
-					style="width: 33%;"
-					variant="outlined"
-					label="Telefono"
-				/>
-				<Textfield
-					bind:value={userEdit.address}
-					required
-					style="width: 33%;"
-					variant="outlined"
-					label="Dirección"
-				/>
-			</div>
-			<div class="new_user_inputs">
-				<Textfield
-					bind:value={userEdit.email}
-					required
-					style="width: 33%;"
-					variant="outlined"
-					label="Correo"
-				/>
-				<Textfield
-					bind:value={userEdit.documentId}
-					required
-					style="width: 33%;"
-					variant="outlined"
-					label="Documento"
-				/>
-				{#if userEdit.status}
-					<SelectNoHelpertext
-						bind:value={userEdit.status.id}
-						options={usersStatusCode}
-						variant="outlined"
-						label="Estado"
-						style="width: 33%;"
-						required
-					/>
-				{/if}
-			</div>
-		</Content>
-		<Actions>
-			<Button disabled={disableUpdate} on:click={handleUpdateUser} color="secondary">
-				Actualizar
-			</Button>
-		</Actions>
-	</Dialog>
-{/key} -->
 
 <svelte:head>
 	<title>Usuarios</title>

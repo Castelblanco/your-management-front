@@ -14,23 +14,7 @@
 	import { onDestroy } from 'svelte';
 
 	const { callEndpointList } = callServices();
-	export let userSelect: TUserDOM = {
-		id: '',
-		firstName: '',
-		lastName: '',
-		documentId: '',
-		email: '',
-		password: '',
-		phone: '',
-		address: '',
-		role: {
-			id: '',
-			name: ''
-		},
-		pointSale: undefined,
-		createdAt: new Date(),
-		updatedAt: new Date()
-	};
+	export let userSelect: TUserDOM;
 	export let userStatusCode: TSelectOption[];
 	export let userRoles: TSelectOption[];
 	export let isCreate = false;
