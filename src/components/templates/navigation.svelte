@@ -47,8 +47,7 @@
 
 	const handleActive = (index: number) => {
 		navigators.forEach((nav, i) => {
-			if (i === index) nav.activated = true;
-			else nav.activated = false;
+			nav.activated = i === index ? true : false;
 		});
 
 		navigators = navigators;

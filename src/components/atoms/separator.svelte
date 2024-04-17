@@ -3,4 +3,4 @@
 	export let style = '';
 </script>
 
-<Separator style="border-width: 0; {style}" />
+<Separator {style} />

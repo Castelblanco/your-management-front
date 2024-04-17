@@ -4,7 +4,9 @@ import {
 	type TUserLoginAPI,
 	type TUserPointSaleAPI,
 	type TUserRoleAPI,
-	type TUserStatusAPI
+	type TUserStatusAPI,
+	type TUserPictureAPI,
+	UserPictureAPI
 } from '../dto';
 import {
 	UserPointSaleDOM,
@@ -12,7 +14,9 @@ import {
 	type TUserLoginDOM,
 	type TUserPointSaleDOM,
 	type TUserRoleDOM,
-	type TUserStatusDOM
+	type TUserStatusDOM,
+	type TUserPictureDOM,
+	UserPictureDOM
 } from '../entities';
 import type { TAdapters } from '$common/base/adapters';
 
@@ -54,6 +58,15 @@ class UsersLoginAdapters implements TAdapters<TUserLoginDOM, TUserLoginAPI> {
 			};
 		}
 
+		let picture: TUserPictureDOM | undefined;
+
+		if (item.picture) {
+			picture = new UserPictureDOM({
+				id: item.picture._id,
+				url: item.picture.url
+			});
+		}
+
 		return new UserLoginDOM({
 			id: item._id,
 			firstName: item.first_name,
@@ -62,6 +75,7 @@ class UsersLoginAdapters implements TAdapters<TUserLoginDOM, TUserLoginAPI> {
 			email: item.email,
 			phone: item.phone,
 			address: item.address,
+			picture,
 			role,
 			token: item.token,
 			pointSale,
@@ -108,6 +122,15 @@ class UsersLoginAdapters implements TAdapters<TUserLoginDOM, TUserLoginAPI> {
 			};
 		}
 
+		let picture: TUserPictureAPI | undefined;
+
+		if (item.picture) {
+			picture = new UserPictureAPI({
+				_id: item.picture.id,
+				url: item.picture.url
+			});
+		}
+
 		return new UserLoginAPI({
 			_id: item.id,
 			first_name: item.firstName,
@@ -116,6 +139,7 @@ class UsersLoginAdapters implements TAdapters<TUserLoginDOM, TUserLoginAPI> {
 			email: item.email,
 			phone: item.phone,
 			address: item.address,
+			picture,
 			role,
 			status,
 			token: item.token,

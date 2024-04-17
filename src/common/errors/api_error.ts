@@ -1,7 +1,12 @@
 export class ApiError {
 	code: string | number;
 	message: string;
-	metadata: unknown;
+	metadata: {
+		code: number;
+		status: number;
+		error: string;
+		message: string;
+	};
 
 	constructor(err: any) {
 		this.code = err.code;

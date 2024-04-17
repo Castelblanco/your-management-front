@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Select, { Option } from '@smui/select';
-	import type { TSelectOption } from './types/select';
+	import type { TSelectOption } from './types';
 	import Icon from '@smui/select/icon';
 
 	export let options: TSelectOption[];

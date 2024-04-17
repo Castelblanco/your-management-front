@@ -22,7 +22,7 @@
 	import { getAllUserRoles } from '$services/user_roles';
 	import { userAdapters } from '$models/users/adapters';
 	import { userRolesAdapters } from '$models/user_roles/adapters';
-	import FormUser from '$templates/form_user.svelte';
+	import ModalFormUser from '$templates/modals/form_user.svelte';
 
 	const { callEndpointList, loading, callEndpointApi, cancelEndpoint } = callServices();
 	const {
@@ -72,25 +72,9 @@
 	let usersStatusCode: TSelectOption[] = [];
 	let usersRolesFilter: TSelectOption[] = [];
 	let usersRoles: TSelectOption[] = [];
-	let openNewUser = false;
-	let newUser: TUserDOM = {
-		id: '',
-		firstName: '',
-		lastName: '',
-		documentId: '',
-		email: '',
-		password: '',
-		phone: '',
-		address: '',
-		role: {
-			id: '',
-			name: ''
-		},
-		pointSale: undefined,
-		createdAt: new Date(),
-		updatedAt: new Date()
-	};
-	let userEdit: TUserDOM = {
+	let openModal = false;
+	let isCreate = false;
+	let userSelect: TUserDOM = {
 		id: '',
 		firstName: '',
 		lastName: '',
@@ -124,9 +108,7 @@
 		createdAt: new Date(),
 		updatedAt: new Date()
 	};
-	let confirmPassword = '';
-	let showEdit = false;
-	$: disableUpdate = validObjects(userEdit, userEditClone);
+	$: disableUpdate = validObjects(userSelect, userEditClone);
 
 	// Pagination
 	let rowsPerPage = 10;
@@ -194,62 +176,68 @@
 		}
 	};
 
-	const handleCreateUser = async () => {
-		try {
-			const status = usersStatusCode.find(({ label }) => label === STATUS_CODE.ACTIVE);
+	// const handleCreateUser = async () => {
+	// 	try {
+	// 		const status = usersStatusCode.find(({ label }) => label === STATUS_CODE.ACTIVE);
 
-			if (!status) return;
-			newUser = {
-				...newUser,
-				status: {
-					name: '',
-					id: `${status.value}`
-				}
-			};
+	// 		if (!status) return;
+	// 		newUser = {
+	// 			...newUser,
+	// 			status: {
+	// 				name: '',
+	// 				id: `${status.value}`
+	// 			}
+	// 		};
 
-			if (newUser.password !== confirmPassword) return;
+	// 		if (newUser.password !== confirmPassword) return;
 
-			const user = await callEndpointApi(createOneUser(newUser), userAdapters);
-			user.status = {
-				id: `${status.value}`,
-				name: status.label
-			};
-			if (users.length >= rowsPerPage) users.pop();
-			users = [user, ...users];
-		} catch (e) {
-			console.log({ e });
-		}
-	};
+	// 		const user = await callEndpointApi(createOneUser(newUser), userAdapters);
+	// 		user.status = {
+	// 			id: `${status.value}`,
+	// 			name: status.label
+	// 		};
+	// 		if (users.length >= rowsPerPage) users.pop();
+	// 		users = [user, ...users];
+	// 	} catch (e) {
+	// 		console.log({ e });
+	// 	}
+	// };
 
-	const handleUpdateUser = async () => {
-		try {
-			const updateUser = await callEndpointApi(updateOneUser(userEdit), userAdapters);
-			const index = users.findIndex(({ id }) => id === updateUser.id);
-			users.splice(index, 1, updateUser);
-			users = users;
-		} catch (e) {
-			console.log({ e });
-		}
-	};
+	// const handleUpdateUser = async () => {
+	// 	try {
+	// 		const updateUser = await callEndpointApi(updateOneUser(userEdit), userAdapters);
+	// 		const index = users.findIndex(({ id }) => id === updateUser.id);
+	// 		users.splice(index, 1, updateUser);
+	// 		users = users;
+	// 	} catch (e) {
+	// 		console.log({ e });
+	// 	}
+	// };
 
 	const handleSelectUser = (user: TUserDOM) => {
 		userEditClone = JSON.parse(JSON.stringify(user));
-		userEdit = JSON.parse(JSON.stringify(user));
-		showEdit = true;
+		userSelect = JSON.parse(JSON.stringify(user));
+		isCreate = false;
+		toggleOpenModal();
+	};
+
+	const handleCreateUser = () => {
+		isCreate = true;
+		toggleOpenModal();
 	};
 
 	const handleAddPage = () => page++;
 	const handleSubtractPage = () => page--;
 	const handleFirstPage = () => (page = 0);
 	const handleLastPage = () => (page = lastPage);
-	const toggleOpennewUser = () => (openNewUser = !openNewUser);
+	const toggleOpenModal = () => (openModal = !openModal);
 
 	getStatusCode();
 	getUserRoles();
 	$: handleSearchUser(filterStatus, filterRole);
 </script>
 
-<ButtonFab on:click={toggleOpennewUser} style="bottom: 30px; right: 30px;" icon="add" />
+<ButtonFab on:click={handleCreateUser} style="bottom: 30px; right: 30px;" icon="add" />
 <section>
 	<Card padded>
 		<form on:submit|preventDefault={() => handleSearchUser(filterStatus, filterRole)}>
@@ -403,8 +391,20 @@
 
 <SeparatorNotLine style="margin-bottom: 50px;" />
 
+{#key openModal}
+	<ModalFormUser
+		bind:userSelect
+		bind:show={openModal}
+		userRoles={usersRoles}
+		userStatusCode={usersStatusCode}
+		{disableUpdate}
+		{rowsPerPage}
+		{isCreate}
+		{users}
+	/>
+{/key}
 <!-- Create Client -->
-{#key openNewUser}
+<!-- {#key openNewUser}
 	<Dialog
 		bind:open={openNewUser}
 		scrimClickAction=""
@@ -431,7 +431,7 @@
 	</Dialog>
 {/key}
 
-<!-- Select Client Sale and Edit -->
+Select Client Sale and Edit
 {#key showEdit}
 	<Dialog bind:open={showEdit} fullscreen surface$style="width: 100%">
 		<Header>
@@ -451,7 +451,7 @@
 			</Button>
 		</Actions>
 	</Dialog>
-{/key}
+{/key} -->
 
 <svelte:head>
 	<title>Usuarios</title>

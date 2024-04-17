@@ -4,7 +4,9 @@ import {
 	UserAPI,
 	UserPointSaleAPI,
 	type TUserRoleAPI,
-	type TUserStatusAPI
+	type TUserStatusAPI,
+	type TUserPictureAPI,
+	UserPictureAPI
 } from '../dto';
 import {
 	type TUserDOM,
@@ -12,7 +14,9 @@ import {
 	UserDOM,
 	UserPointSaleDOM,
 	type TUserRoleDOM,
-	type TUserStatusDOM
+	type TUserStatusDOM,
+	UserPictureDOM,
+	type TUserPictureDOM
 } from '../entities';
 import type { TAdapters } from '$common/base/adapters';
 
@@ -53,6 +57,15 @@ class UsersAdatpers implements TAdapters<TUserDOM, TUserAPI> {
 			};
 		}
 
+		let picture: TUserPictureDOM | undefined;
+
+		if (item.picture) {
+			picture = new UserPictureDOM({
+				id: item.picture._id,
+				url: item.picture.url
+			});
+		}
+
 		return new UserDOM({
 			id: item._id,
 			firstName: item.first_name,
@@ -62,6 +75,7 @@ class UsersAdatpers implements TAdapters<TUserDOM, TUserAPI> {
 			password: item.password,
 			phone: item.phone,
 			address: item.address,
+			picture,
 			role,
 			status,
 			createdAt: item.created_at,
@@ -107,6 +121,15 @@ class UsersAdatpers implements TAdapters<TUserDOM, TUserAPI> {
 			};
 		}
 
+		let picture: TUserPictureAPI | undefined;
+
+		if (item.picture) {
+			picture = new UserPictureAPI({
+				_id: item.picture.id,
+				url: item.picture.url
+			});
+		}
+
 		return new UserAPI({
 			_id: item.id,
 			first_name: item.firstName,
@@ -116,6 +139,7 @@ class UsersAdatpers implements TAdapters<TUserDOM, TUserAPI> {
 			password: item.password,
 			phone: item.phone,
 			address: item.address,
+			picture,
 			role,
 			status,
 			created_at: item.createdAt,

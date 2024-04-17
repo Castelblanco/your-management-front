@@ -10,6 +10,7 @@
 	export let style: string | undefined = undefined;
 	export let helperLineStyle: string | undefined = undefined;
 	export let value: string | number | null | undefined = '';
+	export let files: FileList | undefined = undefined;
 	export let name: string | null | undefined = undefined;
 	export let invalid: boolean | undefined = undefined;
 	export let required: boolean | undefined = undefined;
@@ -22,8 +23,9 @@
 </script>
 
 <Textfield
-	{variant}
+	bind:files
 	bind:value
+	{variant}
 	{label}
 	{invalid}
 	{style}

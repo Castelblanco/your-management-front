@@ -51,7 +51,9 @@ export const callServices = () => {
 			const error = new ApiError(err?.response?.data);
 			errorMessage.set(error);
 			snackbarStore.change({
-				title: error.message,
+				title: error.metadata
+					? error.metadata.error || error.metadata.message
+					: error.message,
 				closeAction: true
 			});
 			throw error;
@@ -69,7 +71,9 @@ export const callServices = () => {
 			const error = new ApiError(err?.response?.data);
 			errorMessage.set(error);
 			snackbarStore.change({
-				title: error.message,
+				title: error.metadata
+					? error.metadata.error || error.metadata.message
+					: error.message,
 				closeAction: true
 			});
 		} finally {

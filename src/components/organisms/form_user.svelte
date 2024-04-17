@@ -4,6 +4,7 @@
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
 	import Map from '$organisms/map.svelte';
 	import Textfield from '$atoms/textfield.svelte';
+	import Icon from '$atoms/icon.svelte';
 	import type { TSelectOption } from '$molecules/types/select';
 	import SelectNoHelpertext from '$molecules/select_no_helpertext.svelte';
 	import { callServices } from '$directives/call_services';
@@ -11,21 +12,32 @@
 	import { pointsSaleAdapters } from '$models/points_sale/adapters';
 	import type { TUserDOM, TUserPointSaleDOM } from '$models/users/entities';
 	import Autocomplete from '@smui-extra/autocomplete';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
+	import CircularLoading from '$atoms/circular_loading.svelte';
 
-	const { callEndpointList } = callServices();
+	const { callEndpointList, cancelEndpoint } = callServices();
 	export let userSelect: TUserDOM;
 	export let userStatusCode: TSelectOption[];
 	export let userRoles: TSelectOption[];
 	export let isCreate = false;
 	export let confirmPassword = '';
+	export let fileList: FileList | undefined;
+	export let inputFile: HTMLInputElement | undefined = undefined;
+	export let pictureLoading = false;
+
+	onMount(async () => {
+		await tick();
+		mapCtl.resize();
+	});
 
 	onDestroy(() => {
+		cancelEndpoint();
 		if (isCreate) userSelect.pointSale = undefined;
 	});
 
 	let mapCtl: IMap;
 	let markerList: Marker[] = [];
+	let showChangePicture = false;
 
 	const resetMakers = () => {
 		markerList.forEach((marker) => marker.remove());
@@ -73,6 +85,7 @@
 		}
 	};
 
+	const toggleShowChangePicture = () => (showChangePicture = !showChangePicture);
 	const handleFormatUbication = (option?: TUserPointSaleDOM): string =>
 		!option ? '' : option.name;
 </script>
@@ -106,6 +119,54 @@
 					Longitud: {userSelect.pointSale.longitude}
 				</Content>
 			</Paper>
+
+			{#if !isCreate}
+				<SeparatorNotLine style="margin-top: 20px;" />
+				<div class="box_picture">
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<div
+						class="picture_tray"
+						on:mouseenter={toggleShowChangePicture}
+						on:mouseleave={toggleShowChangePicture}
+					>
+						{#if userSelect.picture?.url}
+							<img
+								style="width: 200px; height: 200px;"
+								src={userSelect.picture.url}
+								alt="Foto de Perfil"
+							/>
+						{:else}
+							<img
+								style="width: 200px; height: 200px;"
+								src="/user-default.png"
+								alt="Foto de Perfil"
+							/>
+						{/if}
+						{#if showChangePicture && !pictureLoading}
+							<label for="picture_id">
+								<div class="change_picture">
+									<Icon icon="camera_alt" style="width: 24px; height: 24px;" />
+									<p>Cambiar Foto de Perfil</p>
+								</div>
+							</label>
+						{/if}
+						{#if pictureLoading}
+							<div class="change_picture_loading">
+								<CircularLoading style="width: 40px; height: 40px;" indeterminate />
+							</div>
+						{/if}
+					</div>
+				</div>
+				<input
+					bind:files={fileList}
+					bind:this={inputFile}
+					style="display: none;"
+					type="file"
+					name="picture"
+					id="picture_id"
+					accept="image/*"
+				/>
+			{/if}
 
 			<SeparatorNotLine style="margin-top: 20px;" />
 			<div>
@@ -216,5 +277,52 @@
 <style>
 	.container {
 		display: flex;
+
+		& .box_picture {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			& .picture_tray {
+				width: 200px;
+				height: 200px;
+				border-radius: 50%;
+				position: relative;
+
+				& .change_picture {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					border-radius: 50%;
+					cursor: pointer;
+					background-color: #1e2a31cc;
+
+					& p {
+						margin-top: 0;
+					}
+				}
+
+				& .change_picture_loading {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					border-radius: 50%;
+					background-color: #2226;
+				}
+				& img {
+					border-radius: 50%;
+				}
+			}
+		}
 	}
 </style>

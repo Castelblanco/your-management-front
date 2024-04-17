@@ -1,7 +1,7 @@
 <script lang="ts" generics="T">
 	import Autocomplete from '@smui-extra/autocomplete';
 	import { Text } from '@smui/list';
-	import CircularProgress from './circular_progress.svelte';
+	import CircularLoading from './circular_loading.svelte';
 
 	export let value: string | T | undefined = undefined;
 	export let text: string = '';
@@ -35,7 +35,7 @@
 		slot="loading"
 		style="display: flex; width: 100%; justify-content: center; align-items: center;"
 	>
-		<CircularProgress style="height: 24px; width: 24px;" indeterminate />
+		<CircularLoading style="height: 24px; width: 24px;" indeterminate />
 	</Text>
 	<Text
 		slot="no-matches"

@@ -3,16 +3,17 @@
 	import { appTheme } from '$stores/app_theme';
 	import Header from '$templates/header.svelte';
 	import Navigation from '$templates/navigation.svelte';
-	const deviceTheme = matchMedia('(prefers-color-scheme: dark)');
 
+	const deviceTheme = matchMedia('(prefers-color-scheme: dark)');
 	deviceTheme.addEventListener('change', ({ matches }) => {
-		if (matches) $appTheme = 'dark';
-		else $appTheme = 'light';
+		$appTheme = matches ? 'dark' : 'light';
 	});
+
+	export let data;
 </script>
 
 <Navigation />
-<Header />
+<Header pathname={data.pathname} />
 <slot />
 <Snackbar />
 
@@ -20,8 +21,10 @@
 <svelte:head>
 	{#if $appTheme === 'dark'}
 		<link rel="stylesheet" href="/smui-dark.css" media="screen" />
+		<link rel="icon" href="/favicon-dark.png" />
 	{:else}
 		<link rel="stylesheet" href="/smui.css" />
+		<link rel="icon" href="/favicon-light.png" />
 	{/if}
 </svelte:head>
 
