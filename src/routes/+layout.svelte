@@ -8,12 +8,10 @@
 	deviceTheme.addEventListener('change', ({ matches }) => {
 		$appTheme = matches ? 'dark' : 'light';
 	});
-
-	export let data;
 </script>
 
 <Navigation />
-<Header pathname={data.pathname} />
+<Header />
 <slot />
 <Snackbar />
 

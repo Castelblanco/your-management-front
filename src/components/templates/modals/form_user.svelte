@@ -10,7 +10,6 @@
 	import { onDestroy } from 'svelte';
 	import Dialog, { Actions, Content, Header, Title } from '@smui/dialog';
 	import ModalCropper from '$organisms/modal_cropper.svelte';
-	import type Cropper from 'cropperjs';
 	import Button from '$atoms/button.svelte';
 	import FormUser from '$organisms/form_user.svelte';
 	import { createOneUser, updateOneUser, updateOneUserPicture } from '$services/users';
@@ -38,7 +37,6 @@
 		url: ''
 	};
 	let fileList: FileList | undefined;
-	let cropperCtrl: Cropper;
 	let showCropper = false;
 	let inputFile: HTMLInputElement;
 
@@ -140,7 +138,6 @@
 <ModalCropper
 	bind:open={showCropper}
 	bind:fileList
-	bind:cropper={cropperCtrl}
 	bind:imageCrop={userPicture.url}
 	bind:inputFile
 />

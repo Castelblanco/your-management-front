@@ -5,11 +5,11 @@
 	import Dialog, { Actions, Content, Header, Title } from '@smui/dialog';
 
 	export let open = false;
-	export let cropper: CropperJs;
 	export let imageCrop: string | undefined;
 	export let fileList: FileList | undefined;
 	export let inputFile: HTMLInputElement;
 
+	let cropper: CropperJs;
 	let image: string | undefined = '';
 
 	$: if (fileList !== undefined) readerFile(fileList);

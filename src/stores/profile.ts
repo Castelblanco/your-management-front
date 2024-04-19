@@ -20,6 +20,7 @@ const createProfileStore = () => {
 	return {
 		change,
 		subscribe,
+		set,
 		clear
 	};
 };

@@ -10,23 +10,49 @@
 	import { profileStore } from '$stores/profile';
 	import Menu from '@smui/menu';
 	import List, { Item, Text } from '@smui/list';
-	import { goto } from '$app/navigation';
-	import type { LayoutRouteId } from '../../routes/$types';
+	import ProfileView from '$organisms/profile_view.svelte';
+	import ModalCropper from '$organisms/modal_cropper.svelte';
+	import { UserPictureDOM, type TUserPictureDOM } from '$models/users/entities';
+	import { updateOneUserPicture } from '$services/users';
 
-	export let pathname: LayoutRouteId;
 	let menu: Menu;
 	let anchor: HTMLDivElement;
+	let fileList: FileList;
+	let showCropper = false;
+	let loadingPicture = false;
+	let inputFile: HTMLInputElement;
+	let userPicture: TUserPictureDOM = {
+		id: '',
+		url: ''
+	};
+
+	$: if (userPicture.url !== '') updateUserPicture();
 
 	$: iconAppTheme = $appTheme === 'light';
 	$: iconAppThemeTooltip = $appTheme === 'light' ? 'Modo Oscuro' : 'Modo Claron';
-	$: menuProfileActive = pathname === '/profile';
+
+	const updateUserPicture = async () => {
+		try {
+			if (!$profileStore) return;
+			openMenu();
+			loadingPicture = true;
+			const { response } = await updateOneUserPicture($profileStore.id, userPicture);
+			const { item } = (await response).data;
+
+			$profileStore.picture = new UserPictureDOM({
+				id: item._id,
+				url: item.url
+			});
+		} catch (e) {
+			console.log({ e });
+		} finally {
+			loadingPicture = false;
+		}
+	};
 
 	const toggleAppTheme = () => appTheme.toogle();
-	const toggleMenu = () => menu.setOpen(true);
-	const handleGoProfile = () => goto('/profile');
+	const openMenu = () => menu.setOpen(true);
 	const handleLogout = () => profileStore.clear();
-
-	addEventListener('click', () => menu.setOpen(false));
 </script>
 
 {#if $profileStore !== undefined}
@@ -54,7 +80,7 @@
 						icon="person"
 						size="normal"
 						iconSize={35}
-						on:click={toggleMenu}
+						on:click={openMenu}
 					/>
 					<Menu
 						anchor={false}
@@ -62,11 +88,9 @@
 						anchorCorner="BOTTOM_RIGHT"
 						bind:this={menu}
 					>
+						<ProfileView loading={loadingPicture} bind:fileList bind:inputFile />
+						<Separator />
 						<List>
-							<Item on:click={handleGoProfile} activated={menuProfileActive}>
-								<Text>Perfil</Text>
-							</Item>
-							<Separator />
 							<Item on:click={handleLogout}>
 								<Text>Cerrar Sesión</Text>
 							</Item>
@@ -77,3 +101,10 @@
 		</Row>
 	</TopAppBar>
 {/if}
+
+<ModalCropper
+	bind:open={showCropper}
+	bind:fileList
+	bind:imageCrop={userPicture.url}
+	bind:inputFile
+/>
