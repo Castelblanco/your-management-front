@@ -36,12 +36,9 @@ export type TPointSaleUserRoleDOM = {
 export type TPointSaleFilterDOM = {
 	name?: string;
 	statusId?: string;
-};
-
-export type TPointSaleOPT = {
+	users?: boolean;
 	limit: number;
 	offset: number;
-	users: boolean;
 };
 
 export class PointSaleDOM implements TPointSaleDOM {

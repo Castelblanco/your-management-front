@@ -14,8 +14,9 @@
 	import ModalCropper from '$organisms/modal_cropper.svelte';
 	import { UserPictureDOM, type TUserPictureDOM } from '$models/users/entities';
 	import { updateOneUserPicture } from '$services/users';
+	import MenuSurface from '@smui/menu-surface';
 
-	let menu: Menu;
+	let menu: MenuSurface;
 	let anchor: HTMLDivElement;
 	let fileList: FileList;
 	let showCropper = false;
@@ -60,7 +61,7 @@
 		<Row>
 			<Section>
 				<LogoBottomMenu logo="dark" />
-				<P style="margin-left: 20px; font">v.{version}</P>
+				<P style="margin-left: 20px;">v.{version}</P>
 			</Section>
 			<Section style="justify-content: flex-end; padding-right: 30px;">
 				<Tooltip content={iconAppThemeTooltip}>
@@ -82,7 +83,7 @@
 						iconSize={35}
 						on:click={openMenu}
 					/>
-					<Menu
+					<MenuSurface
 						anchor={false}
 						bind:anchorElement={anchor}
 						anchorCorner="BOTTOM_RIGHT"
@@ -95,7 +96,7 @@
 								<Text>Cerrar Sesión</Text>
 							</Item>
 						</List>
-					</Menu>
+					</MenuSurface>
 				</div>
 			</Section>
 		</Row>

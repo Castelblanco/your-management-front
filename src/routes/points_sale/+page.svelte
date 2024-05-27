@@ -188,7 +188,11 @@
 	$: handleSearchPoint(filterStatus);
 </script>
 
-<ButtonFab on:click={toggleOpenNewPoint} style="bottom: 30px; right: 30px;" icon="add" />
+<ButtonFab
+	on:click={toggleOpenNewPoint}
+	style="position: fixed; bottom: 30px; right: 30px;"
+	icon="add"
+/>
 <section>
 	<Card padded>
 		<form on:submit={() => handleSearchPoint(filterStatus)}>
@@ -258,7 +262,6 @@
 			</Pagination>
 		{/if}
 		<DataTable
-			stickyHeader
 			style="height: auto; max-height: 400px; overflow: auto; position: relative;"
 		>
 			<LinearLoading loading={$loading || $loadingStatus} slot="progress" indeterminate />

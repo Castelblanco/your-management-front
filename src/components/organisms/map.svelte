@@ -19,7 +19,7 @@
 
 	let container: HTMLElement;
 	export let mapCtl: Map;
-	export let ubicationSelect: TUbicationMap | undefined;
+	export let ubicationSelect: TUbicationMap | undefined = undefined;
 	export let markerList: Marker[] = [];
 	export let width = 0;
 	export let height = 0;

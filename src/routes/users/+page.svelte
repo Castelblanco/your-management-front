@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
 	import Card from '@smui/card';
 	import DataTable, { Body, Cell, Head, Label, Pagination, Row } from '@smui/data-table';
 	import IconButton from '@smui/icon-button';
@@ -13,18 +12,16 @@
 	import SelectNoHelpertext from '$molecules/select_no_helpertext.svelte';
 	import { getAllStatusCode } from '$services/status_code';
 	import ButtonFab from '$atoms/button_fab.svelte';
-	import Button from '$atoms/button.svelte';
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
-	import { STATUS_CODE } from '$constants/index';
 	import { validObjects } from '$helpers/index';
 	import type { TUserDOM, TUserFilterDOM } from '$models/users/entities';
-	import { createOneUser, getAllUsers, updateOneUser } from '$services/users';
+	import { getAllUsers } from '$services/users';
 	import { getAllUserRoles } from '$services/user_roles';
 	import { userAdapters } from '$models/users/adapters';
 	import { userRolesAdapters } from '$models/user_roles/adapters';
 	import ModalFormUser from '$templates/modals/form_user.svelte';
 
-	const { callEndpointList, loading, callEndpointApi, cancelEndpoint } = callServices();
+	const { callEndpointList, loading, cancelEndpoint } = callServices();
 	const {
 		callEndpointList: callEndpointListStatus,
 		loading: loadingStatus,
@@ -176,44 +173,6 @@
 		}
 	};
 
-	// const handleCreateUser = async () => {
-	// 	try {
-	// 		const status = usersStatusCode.find(({ label }) => label === STATUS_CODE.ACTIVE);
-
-	// 		if (!status) return;
-	// 		newUser = {
-	// 			...newUser,
-	// 			status: {
-	// 				name: '',
-	// 				id: `${status.value}`
-	// 			}
-	// 		};
-
-	// 		if (newUser.password !== confirmPassword) return;
-
-	// 		const user = await callEndpointApi(createOneUser(newUser), userAdapters);
-	// 		user.status = {
-	// 			id: `${status.value}`,
-	// 			name: status.label
-	// 		};
-	// 		if (users.length >= rowsPerPage) users.pop();
-	// 		users = [user, ...users];
-	// 	} catch (e) {
-	// 		console.log({ e });
-	// 	}
-	// };
-
-	// const handleUpdateUser = async () => {
-	// 	try {
-	// 		const updateUser = await callEndpointApi(updateOneUser(userEdit), userAdapters);
-	// 		const index = users.findIndex(({ id }) => id === updateUser.id);
-	// 		users.splice(index, 1, updateUser);
-	// 		users = users;
-	// 	} catch (e) {
-	// 		console.log({ e });
-	// 	}
-	// };
-
 	const handleSelectUser = (user: TUserDOM) => {
 		userEditClone = JSON.parse(JSON.stringify(user));
 		userSelect = JSON.parse(JSON.stringify(user));
@@ -237,7 +196,11 @@
 	$: handleSearchUser(filterStatus, filterRole);
 </script>
 
-<ButtonFab on:click={handleCreateUser} style="bottom: 30px; right: 30px;" icon="add" />
+<ButtonFab
+	on:click={handleCreateUser}
+	style="position: fixed; bottom: 30px; right: 30px;"
+	icon="add"
+/>
 <section>
 	<Card padded>
 		<form on:submit|preventDefault={() => handleSearchUser(filterStatus, filterRole)}>
@@ -349,10 +312,7 @@
 				</IconButton>
 			</Pagination>
 		{/if}
-		<DataTable
-			stickyHeader
-			style="height: auto; max-height: 400px; overflow: auto; position: relative;"
-		>
+		<DataTable style="height: auto; max-height: 400px; overflow: auto;">
 			<LinearLoading
 				loading={$loading || $loadingStatus || $loadingUserRoles}
 				slot="progress"
@@ -391,6 +351,7 @@
 
 <SeparatorNotLine style="margin-bottom: 50px;" />
 
+<!-- Create Client -->
 {#key openModal}
 	<ModalFormUser
 		bind:userSelect
@@ -403,55 +364,6 @@
 		{users}
 	/>
 {/key}
-<!-- Create Client -->
-<!-- {#key openNewUser}
-	<Dialog
-		bind:open={openNewUser}
-		scrimClickAction=""
-		fullscreen
-		surface$style="width: 100%"
-	>
-		<Header>
-			<Title>Crear Usuario</Title>
-		</Header>
-		<SeparatorNotLine style="margin-top: 5px;" />
-		<Content>
-			<FormUser
-				bind:userSelect={newUser}
-				bind:confirmPassword
-				userRoles={usersRoles}
-				userStatusCode={usersStatusCode}
-				isCreate
-			/>
-		</Content>
-		<Actions>
-			<Button on:click={handleCreateUser} color="secondary">Crear</Button>
-			<Button color="secondary">Cancelar</Button>
-		</Actions>
-	</Dialog>
-{/key}
-
-Select Client Sale and Edit
-{#key showEdit}
-	<Dialog bind:open={showEdit} fullscreen surface$style="width: 100%">
-		<Header>
-			<Title>Detalle</Title>
-		</Header>
-		<SeparatorNotLine style="margin-top: 5px;" />
-		<Content>
-			<FormUser
-				bind:userSelect={userEdit}
-				userRoles={usersRoles}
-				userStatusCode={usersStatusCode}
-			/>
-		</Content>
-		<Actions>
-			<Button disabled={disableUpdate} on:click={handleUpdateUser} color="secondary">
-				Actualizar
-			</Button>
-		</Actions>
-	</Dialog>
-{/key} -->
 
 <svelte:head>
 	<title>Usuarios</title>

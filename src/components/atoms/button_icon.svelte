@@ -10,9 +10,10 @@
 	export let iconSize: number | undefined = undefined;
 	export let style: string | undefined = undefined;
 	export let size: 'button' | 'normal' | 'mini' | undefined = undefined;
+	export let color: 'primary' | 'secondary' = 'primary';
 </script>
 
-<IconButton {style} {disabled} {size} {toggle} on:click bind:pressed>
+<IconButton {color} {style} {disabled} {size} {toggle} on:click bind:pressed>
 	{#if iconOn}
 		<Icon style="font-size: {iconOnSize}px;" class="material-icons" on>{iconOn}</Icon>
 	{/if}
