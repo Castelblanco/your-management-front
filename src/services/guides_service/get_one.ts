@@ -4,7 +4,7 @@ import type { TGuideServiceRelations } from '$models/guides_service/entities';
 import type { Dependencies } from '.';
 
 export const buildGetOne = ({ qs, abortController, http }: Dependencies) => {
-	const service = (id: string, relations: TGuideServiceRelations) => {
+	const service = (id: string, relations?: TGuideServiceRelations) => {
 		const controller = abortController();
 		const query = { ...relations, userId: '' };
 

@@ -51,7 +51,9 @@
 			resetMakers();
 			const points = await callEndpointList(
 				getAllPointsSale({
-					name: query
+					name: query,
+					limit: 50,
+					offset: 0
 				}),
 				pointsSaleAdapters
 			);

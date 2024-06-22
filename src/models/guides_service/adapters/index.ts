@@ -74,11 +74,12 @@ class GuideServiceAdapters implements TAdapters<TGuideServiceDOM, TGuideServiceA
 
 		return new GuideServiceDOM({
 			id: item._id,
+			number: item.number,
 			commodity: item.commodity,
 			price: item.price,
 			collection: item.collection,
-			createdAt: item.created_at,
-			updatedAt: item.updated_at,
+			createdAt: new Date(item.created_at),
+			updatedAt: new Date(item.updated_at),
 			status,
 			novelty,
 			service,
@@ -124,6 +125,7 @@ class GuideServiceAdapters implements TAdapters<TGuideServiceDOM, TGuideServiceA
 
 		return new GuideServiceAPI({
 			_id: item.id,
+			number: item.number,
 			commodity: item.commodity,
 			price: item.price,
 			collection: item.collection,
@@ -244,50 +246,50 @@ class GuideServiceAdapters implements TAdapters<TGuideServiceDOM, TGuideServiceA
 	clientApiToDom = (
 		client: TGuideServiceLegalClientAPI | TGuideServiceNaturalClientAPI
 	): TGuideServiceLegalClientDOM | TGuideServiceNaturalClientDOM => {
-		if (client instanceof GuideServiceLegalClientAPI) {
+		if (!client.natural) {
 			return new GuideServiceLegalClientDOM({
 				id: client._id,
 				numberMovil: client.number_movil,
 				address: client.address,
 				nit: client.nit,
-				businessName: client.business_name
+				businessName: client.business_name,
+				natural: client.natural
 			});
 		}
 
-		const defaultClient = client as TGuideServiceNaturalClientAPI;
-
 		return new GuideServiceNaturalClientDOM({
-			id: defaultClient._id,
-			numberMovil: defaultClient.number_movil,
-			address: defaultClient.address,
-			documentId: defaultClient.document_id,
-			firstName: defaultClient.first_name,
-			lastName: defaultClient.last_name
+			id: client._id,
+			numberMovil: client.number_movil,
+			address: client.address,
+			documentId: client.document_id,
+			firstName: client.first_name,
+			lastName: client.last_name,
+			natural: client.natural
 		});
 	};
 
 	clientDomToApi = (
 		client: TGuideServiceLegalClientDOM | TGuideServiceNaturalClientDOM
 	): TGuideServiceLegalClientAPI | TGuideServiceNaturalClientAPI => {
-		if (client instanceof GuideServiceLegalClientDOM) {
+		if (!client.natural) {
 			return new GuideServiceLegalClientAPI({
 				_id: client.id,
 				number_movil: client.numberMovil,
 				address: client.address,
 				nit: client.nit,
-				business_name: client.businessName
+				business_name: client.businessName,
+				natural: client.natural
 			});
 		}
 
-		const defaultClient = client as TGuideServiceNaturalClientDOM;
-
 		return new GuideServiceNaturalClientAPI({
-			_id: defaultClient.id,
-			number_movil: defaultClient.numberMovil,
-			address: defaultClient.address,
-			document_id: defaultClient.documentId,
-			first_name: defaultClient.firstName,
-			last_name: defaultClient.lastName
+			_id: client.id,
+			number_movil: client.numberMovil,
+			address: client.address,
+			document_id: client.documentId,
+			first_name: client.firstName,
+			last_name: client.lastName,
+			natural: client.natural
 		});
 	};
 }

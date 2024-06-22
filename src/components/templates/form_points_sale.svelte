@@ -28,40 +28,6 @@
 		markerList = [];
 	};
 
-	// const getRoute = async () => {
-	// 	const res = await services.calculateRoute({
-	// 		key: PUBLIC_TOMTOM_API_KEY,
-	// 		locations: [
-	// 			[-74.11891584086383, 4.694149337238631],
-	// 			[-74.1365383646386, 4.714790920225744]
-	// 		]
-	// 	});
-
-	// 	console.log({ res });
-
-	// 	const geojson = res.toGeoJson();
-
-	// 	mapCtl.addLayer({
-	// 		id: crypto.randomUUID(),
-	// 		type: 'line',
-	// 		source: {
-	// 			type: 'geojson',
-	// 			data: geojson
-	// 		},
-	// 		layout: {
-	// 			'line-cap': 'round',
-	// 			'line-join': 'round'
-	// 		},
-	// 		paint: {
-	// 			'line-color': '#ff0000',
-	// 			'line-width': 2
-	// 		}
-	// 	});
-
-	// 	mapCtl.setCenter([-74.1365383646386, 4.714790920225744]);
-	// 	mapCtl.setZoom(12);
-	// };
-
 	const searchPoint = async (query: string): Promise<false | TPointSaleDOM[]> => {
 		try {
 			if (query === '' || query === pointSaleSelect?.address) return false;

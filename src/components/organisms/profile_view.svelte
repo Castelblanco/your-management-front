@@ -32,7 +32,7 @@
 						on:click={handleClickEdit}
 						mini
 						icon="edit"
-						style="position: fixed; top: 100px; left: 130px;"
+						style="position: fixed; top: 100px; left: 150px;"
 					/>
 				{/if}
 			</div>

@@ -8,7 +8,6 @@
 	import { appTheme } from '$stores/app_theme';
 	import Tooltip from '$atoms/tooltip.svelte';
 	import { profileStore } from '$stores/profile';
-	import Menu from '@smui/menu';
 	import List, { Item, Text } from '@smui/list';
 	import ProfileView from '$organisms/profile_view.svelte';
 	import ModalCropper from '$organisms/modal_cropper.svelte';
@@ -22,19 +21,21 @@
 	let showCropper = false;
 	let loadingPicture = false;
 	let inputFile: HTMLInputElement;
-	let userPicture: TUserPictureDOM = {
+	const userPicture: TUserPictureDOM = {
 		id: '',
 		url: ''
 	};
 
-	$: if (userPicture.url !== '') updateUserPicture();
+	$: updateUserPicture(userPicture);
 
 	$: iconAppTheme = $appTheme === 'light';
 	$: iconAppThemeTooltip = $appTheme === 'light' ? 'Modo Oscuro' : 'Modo Claron';
 
-	const updateUserPicture = async () => {
+	const updateUserPicture = async (userPicture: TUserPictureDOM) => {
 		try {
 			if (!$profileStore) return;
+			if (userPicture.url === '') return;
+
 			openMenu();
 			loadingPicture = true;
 			const { response } = await updateOneUserPicture($profileStore.id, userPicture);

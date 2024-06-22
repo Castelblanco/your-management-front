@@ -1,8 +1,12 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Snackbar from '$organisms/snackbar.svelte';
 	import { appTheme } from '$stores/app_theme';
+	import { profileStore } from '$stores/profile';
 	import Header from '$templates/header.svelte';
 	import Navigation from '$templates/navigation.svelte';
+
+	$: if (!profileStore) goto('/auth/login');
 
 	const deviceTheme = matchMedia('(prefers-color-scheme: dark)');
 	deviceTheme.addEventListener('change', ({ matches }) => {

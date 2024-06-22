@@ -77,6 +77,11 @@ export type TUserLoginDOM = {
 	pointSale?: TUserPointSaleDOM;
 };
 
+export type TInitUserLoginDOM = {
+	email: string;
+	password: string;
+};
+
 export class UserDOM implements TUserDOM {
 	id: string;
 	firstName: string;

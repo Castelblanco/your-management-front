@@ -356,12 +356,12 @@
 	<ModalFormUser
 		bind:userSelect
 		bind:show={openModal}
+		bind:users
 		userRoles={usersRoles}
 		userStatusCode={usersStatusCode}
 		{disableUpdate}
 		{rowsPerPage}
 		{isCreate}
-		{users}
 	/>
 {/key}
 

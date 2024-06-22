@@ -1,12 +1,6 @@
 <script lang="ts">
 	import Card from '@smui/card';
 	import DataTable, { Body, Cell, Head, Row } from '@smui/data-table';
-
-	let lngLat = { lat: 4.694351603367982, lon: -74.11896844417934 };
-
-	const logClick = () => {
-		console.log(lngLat);
-	};
 </script>
 
 <section>

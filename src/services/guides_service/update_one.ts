@@ -8,7 +8,7 @@ export const buildUpdateOne = ({ abortController, http, adapter }: Dependencies)
 		const controller = abortController();
 
 		return {
-			response: http.post<ApiResponses<TGuideServiceAPI>>(
+			response: http.put<ApiResponses<TGuideServiceAPI>>(
 				`/update-one/${guide.id}`,
 				adapter.domToApi(guide),
 				{

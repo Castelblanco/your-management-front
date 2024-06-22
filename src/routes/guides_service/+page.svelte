@@ -13,7 +13,7 @@
 	import { getAllStatusCode } from '$services/status_code';
 	import ButtonFab from '$atoms/button_fab.svelte';
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
-	import { validObjects } from '$helpers/index';
+	import { addCommodityUnits, formatDateView } from '$helpers/index';
 	import type { TUserDOM, TUserFilterDOM } from '$models/users/entities';
 	import { getAllUsers } from '$services/users';
 	import { getAllUserRoles } from '$services/user_roles';
@@ -21,9 +21,13 @@
 	import { userRolesAdapters } from '$models/user_roles/adapters';
 	import { goto } from '$app/navigation';
 	import {
+		getAllGuidesService,
 		getGuidesServiceNolveties,
 		getGuidesServiceTypeServices
 	} from '$services/guides_service';
+	import { guidesServiceAdapters } from '$models/guides_service/adapters';
+	import type { TGuideServiceDOM } from '$models/guides_service/entities';
+	import { profileStore } from '$stores/profile';
 
 	const { callEndpointList, loading, callEndpointApi, cancelEndpoint } = callServices();
 	const {
@@ -70,7 +74,7 @@
 	let filterRole: string | undefined = undefined;
 	let filterNovelty: string | undefined = undefined;
 	let filterServicesType: string | undefined = undefined;
-	let users: TUserDOM[] = [];
+	let guides: TGuideServiceDOM[] = [];
 	let usersStatusCodeFilter: TSelectOption[] = [];
 	let usersStatusCode: TSelectOption[] = [];
 	let usersRolesFilter: TSelectOption[] = [];
@@ -78,48 +82,13 @@
 	let noveltiesFilter: TSelectOption[] = [];
 	let servicesTypeFilter: TSelectOption[] = [];
 	let openModal = false;
-	let userSelect: TUserDOM = {
-		id: '',
-		firstName: '',
-		lastName: '',
-		documentId: '',
-		email: '',
-		password: '',
-		phone: '',
-		address: '',
-		role: {
-			id: '',
-			name: ''
-		},
-		pointSale: undefined,
-		createdAt: new Date(),
-		updatedAt: new Date()
-	};
-	let userEditClone: TUserDOM = {
-		id: '',
-		firstName: '',
-		lastName: '',
-		documentId: '',
-		email: '',
-		password: '',
-		phone: '',
-		address: '',
-		role: {
-			id: '',
-			name: ''
-		},
-		pointSale: undefined,
-		createdAt: new Date(),
-		updatedAt: new Date()
-	};
-	$: disableUpdate = validObjects(userSelect, userEditClone);
 
 	// Pagination
 	let rowsPerPage = 10;
 	let page = 0;
 	$: start = page * rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, users.length);
-	$: lastPage = Math.max(Math.ceil(users.length / rowsPerPage) - 1, 0);
+	$: end = Math.min(start + rowsPerPage, guides.length);
+	$: lastPage = Math.max(Math.ceil(guides.length / rowsPerPage) - 1, 0);
 	$: if (page > lastPage) page = lastPage;
 
 	const getStatusCode = async () => {
@@ -199,29 +168,30 @@
 		}
 	};
 
-	const handleSearchUser = async (statusId?: string, roleId?: string) => {
+	const handleSearchGuide = async (statusId?: string, roleId?: string) => {
 		try {
-			users = await callEndpointList(
-				getAllUsers({
+			guides = await callEndpointList(
+				getAllGuidesService({
 					...filters,
-					statusId,
-					roleId,
-					role: true,
-					pointSale: true,
-					limit: rowsPerPage,
-					offset: page
+					userId: $profileStore?.id || '',
+					limit: 50,
+					offset: 0,
+					status: true,
+					clientOrigin: true,
+					clientDestination: true,
+					pointSaleOrigin: true,
+					pointSaleDestination: true,
+					service: true
 				}),
-				userAdapters
+				guidesServiceAdapters
 			);
 		} catch (e) {
 			console.log({ e });
 		}
 	};
 
-	const handleSelectUser = (user: TUserDOM) => {
-		userEditClone = JSON.parse(JSON.stringify(user));
-		userSelect = JSON.parse(JSON.stringify(user));
-		toggleOpenModal();
+	const handleSelectGuide = (guide: TGuideServiceDOM) => {
+		goto(`/guides_service/${guide.id}`);
 	};
 
 	const handleCreateUser = () => goto('/guides_service/create');
@@ -230,12 +200,11 @@
 	const handleSubtractPage = () => page--;
 	const handleFirstPage = () => (page = 0);
 	const handleLastPage = () => (page = lastPage);
-	const toggleOpenModal = () => (openModal = !openModal);
 
 	getNoveltiesAndServicesType();
 	getStatusCode();
 	getUserRoles();
-	$: handleSearchUser(filterStatus, filterRole);
+	$: handleSearchGuide(filterStatus, filterRole);
 </script>
 
 <ButtonFab
@@ -245,7 +214,7 @@
 />
 <section>
 	<Card padded>
-		<form on:submit|preventDefault={() => handleSearchUser(filterStatus, filterRole)}>
+		<form on:submit|preventDefault={() => handleSearchGuide(filterStatus, filterRole)}>
 			<div class="box_inputs">
 				<TextfieldWithIcon
 					bind:value={filters.firstName}
@@ -339,7 +308,7 @@
 					/>
 
 					<span style="margin-left: 40px;">
-						{start + 1}-{end} of {users.length}
+						{start + 1}-{end} of {guides.length}
 					</span>
 				</svelte:fragment>
 
@@ -382,29 +351,60 @@
 
 			<Head>
 				<Row>
-					<Cell>Nombre</Cell>
-					<Cell>Apellido</Cell>
-					<Cell>Documento</Cell>
-					<Cell>Correo</Cell>
-					<Cell>Rol</Cell>
+					<Cell>Fecha y Hora</Cell>
+					<Cell>Guía</Cell>
 					<Cell>Estado</Cell>
+					<Cell>Remitente</Cell>
+					<Cell>Dir Remitente</Cell>
+					<Cell>Tel Remitente</Cell>
+					<Cell>Origen</Cell>
+					<Cell>Destinatario</Cell>
+					<Cell>Dir Destino</Cell>
+					<Cell>Tel Destino</Cell>
+					<Cell>Destino</Cell>
+					<Cell>Servicio</Cell>
+					<Cell>Unidades</Cell>
+					<Cell>Total $</Cell>
 				</Row>
 			</Head>
 
 			<Body>
-				{#each users as item (item.id)}
-					<Row style="cursor: pointer;" on:click={() => handleSelectUser(item)}>
-						<Cell>{item.firstName}</Cell>
-						<Cell>{item.lastName}</Cell>
-						<Cell>{item.documentId}</Cell>
-						<Cell>{item.email}</Cell>
-						<Cell>{item.role?.name}</Cell>
+				{#each guides as item (item.id)}
+					<Row style="cursor: pointer;" on:click={() => handleSelectGuide(item)}>
+						<Cell>{formatDateView(item.createdAt)}</Cell>
+						<Cell>{item.number}</Cell>
 						<Cell>{item.status?.name}</Cell>
+						{#if item.clientOrigin?.natural}
+							<Cell>{item.clientOrigin?.firstName} {item.clientOrigin?.lastName}</Cell>
+						{:else}
+							<Cell>{item.clientOrigin?.businessName} {item.clientOrigin?.nit}</Cell>
+						{/if}
+						<Cell>{item.clientOrigin?.address}</Cell>
+						<Cell>{item.clientOrigin?.numberMovil}</Cell>
+						<Cell>{item.pointSaleOrigin?.municipality}</Cell>
+
+						{#if item.clientDestination?.natural}
+							<Cell
+								>{item.clientDestination?.firstName}
+								{item.clientDestination?.lastName}</Cell
+							>
+						{:else}
+							<Cell
+								>{item.clientDestination?.businessName}
+								{item.clientDestination?.nit}</Cell
+							>
+						{/if}
+						<Cell>{item.clientDestination?.address}</Cell>
+						<Cell>{item.clientDestination?.numberMovil}</Cell>
+						<Cell>{item.pointSaleDestination?.municipality}</Cell>
+						<Cell>{item.service?.name}</Cell>
+						<Cell>{addCommodityUnits(item.commodity)}</Cell>
+						<Cell>${item.price}</Cell>
 					</Row>
 				{/each}
 			</Body>
 		</DataTable>
-		{#if users.length === 0}
+		{#if guides.length === 0}
 			<P style="text-align: center;">Sin Resultados</P>
 		{/if}
 	</Card>

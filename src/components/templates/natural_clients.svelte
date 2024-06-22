@@ -291,7 +291,7 @@
 				</IconButton>
 			</Pagination>
 		{/if}
-		<DataTable style="height: auto; max-height: 400px; overflow: auto; z-index: 1000;">
+		<DataTable style="height: auto; max-height: 400px; overflow: auto;">
 			<LinearLoading loading={$loading || $loadingStatus} slot="progress" indeterminate />
 
 			<Head>

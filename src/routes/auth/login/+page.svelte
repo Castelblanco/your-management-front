@@ -26,7 +26,7 @@
 			const login = await callEndpointApi(userLogin(profileLogin), usersLoginAdapters);
 			profileStore.change(login);
 
-			goto('/profile');
+			goto('/guides_service');
 		} catch (e) {
 			console.log({ e });
 		}

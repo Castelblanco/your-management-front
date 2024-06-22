@@ -1,5 +1,6 @@
 export type TGuideServiceAPI = {
 	_id: string;
+	number: number;
 	commodity: TGuideServiceCommodityAPI[];
 	price: number;
 	collection: boolean;
@@ -77,6 +78,7 @@ export type TGuideServiceLegalClientAPI = {
 	address: string;
 	nit: string;
 	business_name: string;
+	natural: false;
 };
 
 export type TGuideServiceNaturalClientAPI = {
@@ -86,10 +88,12 @@ export type TGuideServiceNaturalClientAPI = {
 	document_id: string;
 	first_name: string;
 	last_name: string;
+	natural: true;
 };
 
 export class GuideServiceAPI implements TGuideServiceAPI {
 	_id: string;
+	number: number;
 	commodity: TGuideServiceCommodityAPI[];
 	price: number;
 	collection: boolean;
@@ -106,6 +110,7 @@ export class GuideServiceAPI implements TGuideServiceAPI {
 
 	constructor(guide: TGuideServiceAPI) {
 		this._id = guide._id;
+		this.number = guide.number;
 		this.commodity = guide.commodity;
 		this.price = guide.price;
 		this.created_at = guide.created_at;
@@ -176,6 +181,7 @@ export class GuideServiceLegalClientAPI implements TGuideServiceLegalClientAPI {
 	address: string;
 	nit: string;
 	business_name: string;
+	natural: false;
 
 	constructor(client: TGuideServiceLegalClientAPI) {
 		this._id = client._id;
@@ -183,6 +189,7 @@ export class GuideServiceLegalClientAPI implements TGuideServiceLegalClientAPI {
 		this.address = client.address;
 		this.nit = client.nit;
 		this.business_name = client.business_name;
+		this.natural = false;
 	}
 }
 
@@ -193,6 +200,7 @@ export class GuideServiceNaturalClientAPI implements TGuideServiceNaturalClientA
 	document_id: string;
 	first_name: string;
 	last_name: string;
+	natural: true;
 
 	constructor(client: TGuideServiceNaturalClientAPI) {
 		this._id = client._id;
@@ -201,5 +209,6 @@ export class GuideServiceNaturalClientAPI implements TGuideServiceNaturalClientA
 		this.document_id = client.document_id;
 		this.first_name = client.first_name;
 		this.last_name = client.last_name;
+		this.natural = true;
 	}
 }

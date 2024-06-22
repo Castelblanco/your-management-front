@@ -122,7 +122,9 @@
 			points = await callEndpointList(
 				getAllPointsSale({
 					statusId,
-					name: filterName
+					name: filterName,
+					limit: 50,
+					offset: 0
 				}),
 				pointsSaleAdapters
 			);

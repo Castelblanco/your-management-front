@@ -39,7 +39,13 @@
 	const toggleOpen = () => (open = !open);
 </script>
 
-<Dialog bind:open fullscreen scrimClickAction="" surface$style="width: 100%;">
+<Dialog
+	bind:open
+	fullscreen
+	scrimClickAction=""
+	style="z-index: 10000000000000000000000000000000;"
+	surface$style="width: 100%;"
+>
 	<Header>
 		<Title>Adaptando Foto</Title>
 	</Header>

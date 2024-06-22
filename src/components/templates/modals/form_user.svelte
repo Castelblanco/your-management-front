@@ -32,7 +32,7 @@
 	});
 
 	let confirmPassword = '';
-	let userPicture: TUserPictureDOM = {
+	const userPicture: TUserPictureDOM = {
 		id: '',
 		url: ''
 	};
@@ -42,7 +42,9 @@
 
 	let loadingPicture = false;
 
-	$: if (userPicture.url !== '') updateUserPicture();
+	$: updateUserPicture(userPicture);
+
+	$: console.log({ userPicture });
 
 	const handleCreateUser = async () => {
 		try {
@@ -82,8 +84,11 @@
 		}
 	};
 
-	const updateUserPicture = async () => {
+	const updateUserPicture = async (userPicture: TUserPictureDOM) => {
 		try {
+			console.log('change picture', { userPicture });
+			if (userPicture.url === '') return;
+
 			loadingPicture = true;
 			const { response } = await updateOneUserPicture(userSelect.id, userPicture);
 			const { item } = (await response).data;
@@ -100,7 +105,12 @@
 	};
 </script>
 
-<Dialog bind:open={show} fullscreen surface$style="width: 100%">
+<Dialog
+	bind:open={show}
+	fullscreen
+	style="z-index: 100000000;"
+	surface$style="width: 100vw; max-width: 1200px"
+>
 	<Header>
 		<Title>
 			{#if isCreate}
@@ -122,6 +132,12 @@
 			{isCreate}
 			pictureLoading={loadingPicture}
 		/>
+		<ModalCropper
+			bind:open={showCropper}
+			bind:fileList
+			bind:imageCrop={userPicture.url}
+			bind:inputFile
+		/>
 	</Content>
 	<Actions>
 		{#if isCreate}
@@ -134,10 +150,3 @@
 		{/if}
 	</Actions>
 </Dialog>
-
-<ModalCropper
-	bind:open={showCropper}
-	bind:fileList
-	bind:imageCrop={userPicture.url}
-	bind:inputFile
-/>
