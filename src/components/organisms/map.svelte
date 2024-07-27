@@ -23,6 +23,7 @@
 	export let markerList: Marker[] = [];
 	export let width = 0;
 	export let height = 0;
+	export let disabled = false;
 
 	$: if (
 		ubicationSelect !== undefined &&
@@ -57,6 +58,7 @@
 		mapCtl.addControl(new NavigationControl());
 
 		mapCtl.on('dblclick', async (e) => {
+			if (disabled) return;
 			resetMakers();
 			const res = await services.reverseGeocode({
 				key: PUBLIC_TOMTOM_API_KEY,

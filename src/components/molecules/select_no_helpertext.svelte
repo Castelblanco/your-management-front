@@ -3,15 +3,16 @@
 	import type { TSelectOption } from './types';
 	import Icon from '@smui/select/icon';
 
-	export let options: TSelectOption[];
+	export let options: TSelectOption[] = [];
 	export let icon: string | undefined = undefined;
 	export let label: string | undefined = undefined;
-	export let value: number | string | undefined = undefined;
+	export let value: number | string | undefined;
 	export let disabled = false;
 	export let required = false;
 	export let invalid = false;
 	export let variant: 'standard' | 'filled' | 'outlined' | undefined = undefined;
 	export let style = '';
+	export let key = (item: any) => '';
 </script>
 
 <Select
@@ -22,8 +23,8 @@
 	{invalid}
 	{label}
 	{style}
+	{key}
 	color="primary"
-	menu$horizontallyCenteredOnViewport
 >
 	{#if icon}
 		<Icon class="material-icons" slot="leadingIcon">{icon}</Icon>

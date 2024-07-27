@@ -46,6 +46,7 @@ export type TGuideServiceNoveltyDOM = {
 export type TGuideServiceTypeServiceDOM = {
 	id: string;
 	name: string;
+	tab: string;
 };
 
 export type TGuideServiceFilterDOM = {
@@ -61,6 +62,11 @@ export type TGuideServiceFilterDOM = {
 	pointSaleDestination?: boolean;
 	clientOrigin?: boolean;
 	clientDestination?: boolean;
+	startDate?: number;
+	endDate?: number;
+	statusId?: string;
+	noveltyId?: string;
+	serviceId?: string;
 };
 
 export type TGuideServiceRelations = {
@@ -182,6 +188,18 @@ export class GuideServicePointSaleDOM implements TGuideServicePointSaleDOM {
 		this.latitude = pointSale.latitude;
 		this.longitude = pointSale.longitude;
 		this.budget = pointSale.budget;
+	}
+}
+
+export class GuideServiceTypeServiceDOM implements TGuideServiceTypeServiceDOM {
+	id: string;
+	name: string;
+	tab: string;
+
+	constructor(svc: TGuideServiceTypeServiceDOM) {
+		this.id = svc.id;
+		this.name = svc.name;
+		this.tab = svc.tab;
 	}
 }
 

@@ -4,7 +4,7 @@
 	export let disabled = false;
 	export let value: any = undefined;
 	export let color: 'primary' | 'secondary' = 'primary';
-	export let checked: boolean;
+	export let checked: boolean | undefined;
 	export let icons: boolean = true;
 </script>
 

@@ -4,7 +4,7 @@
 	import IconButton from '@smui/icon-button';
 	import LinearLoading from '$atoms/linear_loading.svelte';
 	import { callServices } from '$directives/call_services';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import P from '$atoms/p.svelte';
 	import { statusCodeAdapters } from '$models/status_code/adapters';
 	import TextfieldWithIcon from '$atoms/textfield_wih_icon.svelte';
@@ -14,11 +14,7 @@
 	import ButtonFab from '$atoms/button_fab.svelte';
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
 	import { addCommodityUnits, formatDateView } from '$helpers/index';
-	import type { TUserDOM, TUserFilterDOM } from '$models/users/entities';
-	import { getAllUsers } from '$services/users';
-	import { getAllUserRoles } from '$services/user_roles';
-	import { userAdapters } from '$models/users/adapters';
-	import { userRolesAdapters } from '$models/user_roles/adapters';
+	import type { TUserFilterDOM } from '$models/users/entities';
 	import { goto } from '$app/navigation';
 	import {
 		getAllGuidesService,
@@ -28,6 +24,8 @@
 	import { guidesServiceAdapters } from '$models/guides_service/adapters';
 	import type { TGuideServiceDOM } from '$models/guides_service/entities';
 	import { profileStore } from '$stores/profile';
+	import Textfield from '$atoms/textfield.svelte';
+	import Select from '$molecules/select.svelte';
 
 	const { callEndpointList, loading, callEndpointApi, cancelEndpoint } = callServices();
 	const {
@@ -45,6 +43,11 @@
 		cancelEndpoint();
 		cancelEndpointStatus();
 		cancelEndpointUserRoles();
+	});
+
+	onMount(() => {
+		getNoveltiesAndServicesType();
+		getStatusCode();
 	});
 
 	const pagesOptions: TSelectOption[] = [
@@ -70,18 +73,15 @@
 		offset: 0,
 		status: true
 	};
-	let filterStatus: string | undefined = undefined;
-	let filterRole: string | undefined = undefined;
-	let filterNovelty: string | undefined = undefined;
-	let filterServicesType: string | undefined = undefined;
+	let filterStatus: string = '';
+	let filterNovelty: string = '';
+	let filterServicesType: string = '';
 	let guides: TGuideServiceDOM[] = [];
-	let usersStatusCodeFilter: TSelectOption[] = [];
-	let usersStatusCode: TSelectOption[] = [];
-	let usersRolesFilter: TSelectOption[] = [];
-	let usersRoles: TSelectOption[] = [];
+	let statusCode: TSelectOption[] = [];
 	let noveltiesFilter: TSelectOption[] = [];
 	let servicesTypeFilter: TSelectOption[] = [];
-	let openModal = false;
+	let startTime = '';
+	let endTime = '';
 
 	// Pagination
 	let rowsPerPage = 10;
@@ -94,31 +94,12 @@
 	const getStatusCode = async () => {
 		try {
 			const status = await callEndpointListStatus(
-				getAllStatusCode('users'),
+				getAllStatusCode('guides_service'),
 				statusCodeAdapters
 			);
 			const statusMap = status.map(({ name, id }) => ({ label: name, value: id }));
 
-			usersStatusCode = statusMap;
-			usersStatusCodeFilter = [
-				{
-					label: '',
-					value: ''
-				},
-				...statusMap
-			];
-		} catch (e) {
-			console.log({ e });
-		}
-	};
-
-	const getUserRoles = async () => {
-		try {
-			const roles = await callEndpointListUserRoles(getAllUserRoles(), userRolesAdapters);
-			const statusMap = roles.map(({ name, id }) => ({ label: name, value: id }));
-
-			usersRoles = statusMap;
-			usersRolesFilter = [
+			statusCode = [
 				{
 					label: '',
 					value: ''
@@ -168,8 +149,20 @@
 		}
 	};
 
-	const handleSearchGuide = async (statusId?: string, roleId?: string) => {
+	const handleSearchGuide = async (
+		startTime: string,
+		endTime: string,
+		statusId?: string,
+		noveltyId?: string,
+		serviceId?: string
+	) => {
 		try {
+			const startDate = startTime ? new Date(startTime) : new Date();
+			if (!startTime) startDate.setDate(1);
+			const endDate = endTime
+				? new Date(endTime)
+				: new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+
 			guides = await callEndpointList(
 				getAllGuidesService({
 					...filters,
@@ -181,7 +174,12 @@
 					clientDestination: true,
 					pointSaleOrigin: true,
 					pointSaleDestination: true,
-					service: true
+					service: true,
+					startDate: startDate.getTime(),
+					endDate: endDate.getTime(),
+					statusId,
+					noveltyId,
+					serviceId
 				}),
 				guidesServiceAdapters
 			);
@@ -201,10 +199,13 @@
 	const handleFirstPage = () => (page = 0);
 	const handleLastPage = () => (page = lastPage);
 
-	getNoveltiesAndServicesType();
-	getStatusCode();
-	getUserRoles();
-	$: handleSearchGuide(filterStatus, filterRole);
+	$: handleSearchGuide(
+		startTime,
+		endTime,
+		filterStatus,
+		filterNovelty,
+		filterServicesType
+	);
 </script>
 
 <ButtonFab
@@ -214,81 +215,54 @@
 />
 <section>
 	<Card padded>
-		<form on:submit|preventDefault={() => handleSearchGuide(filterStatus, filterRole)}>
+		<form
+			on:submit|preventDefault={() =>
+				handleSearchGuide(
+					startTime,
+					endTime,
+					filterStatus,
+					filterNovelty,
+					filterServicesType
+				)}
+		>
 			<div class="box_inputs">
-				<TextfieldWithIcon
-					bind:value={filters.firstName}
+				<Textfield
+					type="datetime-local"
+					bind:value={startTime}
+					label="Fecha de Inicio"
 					variant="outlined"
-					label="Nombre"
-					iconLeft="search"
 					style="width: 32%;"
-					disabled={$loading}
-					name="firstname"
 				/>
-				<TextfieldWithIcon
-					bind:value={filters.lastName}
+				<Textfield
+					type="datetime-local"
+					bind:value={endTime}
+					label="Fecha Final"
 					variant="outlined"
-					label="Apellido"
-					iconLeft="search"
 					style="width: 32%;"
-					disabled={$loading}
-					name="lastname"
 				/>
-				<TextfieldWithIcon
-					bind:value={filters.email}
-					variant="outlined"
-					label="Correo"
-					iconLeft="search"
-					style="width: 32%;"
-					disabled={$loading}
-					name="email"
-				/>
-			</div>
-			<SeparatorNotLine style="margin-top: 10px;" />
-			<div class="box_inputs">
-				<TextfieldWithIcon
-					bind:value={filters.documentId}
-					variant="outlined"
-					label="Documento"
-					iconLeft="search"
-					style="width: 32%;"
-					disabled={$loading}
-					name="document"
-				/>
-				<SelectNoHelpertext
-					bind:value={filterRole}
-					options={usersRolesFilter}
-					variant="outlined"
-					label="Rol"
-					style="width: 32%;"
-					disabled={$loading}
-				/>
-				<SelectNoHelpertext
+				<Select
 					bind:value={filterStatus}
-					options={usersStatusCodeFilter}
-					variant="outlined"
+					options={statusCode}
 					label="Estado"
+					variant="outlined"
 					style="width: 32%;"
-					disabled={$loading}
 				/>
 			</div>
 			<SeparatorNotLine style="margin-top: 10px;" />
 			<div class="box_inputs">
-				<SelectNoHelpertext
-					bind:value={filterNovelty}
-					options={noveltiesFilter}
-					variant="outlined"
-					label="Novedades"
-					style="width: 32%;"
-					disabled={$loading}
-				/>
-				<SelectNoHelpertext
+				<Select
 					bind:value={filterServicesType}
 					options={servicesTypeFilter}
+					label="Tipo de Servicio"
 					variant="outlined"
-					label="Tipos de Servicio"
-					style="width: 32%;"
-					disabled={$loading}
+					style="width: 45%;"
+				/>
+				<Select
+					bind:value={filterNovelty}
+					options={noveltiesFilter}
+					label="Novedad"
+					variant="outlined"
+					style="width: 45%;"
 				/>
 			</div>
 
@@ -297,7 +271,7 @@
 
 		<SeparatorNotLine style="margin: 20px 0;" />
 
-		{#if usersStatusCode.length > 0}
+		{#if statusCode.length > 0}
 			<Pagination>
 				<svelte:fragment slot="rowsPerPage">
 					<Label>Filas por Pagina</Label>
@@ -428,7 +402,7 @@
 	form {
 		& .box_inputs {
 			display: flex;
-			justify-content: space-evenly;
+			justify-content: space-between;
 		}
 	}
 </style>

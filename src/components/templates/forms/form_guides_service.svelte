@@ -6,15 +6,16 @@
 	import { callServices } from '$directives/call_services';
 	import {
 		type TGuideServiceDOM,
-		type TGuideServicePointSaleDOM
+		type TGuideServicePointSaleDOM,
+		type TGuideServiceTypeServiceDOM,
+		type TGuideServiceNoveltyDOM,
+		type TGuideServiceStatusDOM
 	} from '$models/guides_service/entities';
 	import { statusCodeAdapters } from '$models/status_code/adapters';
-	import type { TSelectOption } from '$molecules/types';
 	import { getAllStatusCode } from '$services/status_code';
-
 	import FormField from '@smui/form-field';
 	import Paper, { Content, Title } from '@smui/paper';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import Map from '$organisms/map.svelte';
 	import Card from '@smui/card';
 	import Separator from '$atoms/separator.svelte';
@@ -29,12 +30,12 @@
 	import { getAllPointsSale } from '$services/points_sale';
 	import { pointsSaleAdapters } from '$models/points_sale/adapters';
 	import PointSalePaper from '$molecules/papers/point_sale_paper.svelte';
-	import SelectNoHelpertext from '$molecules/select_no_helpertext.svelte';
 	import {
 		getGuidesServiceNolveties,
 		getGuidesServiceTypeServices
 	} from '$services/guides_service';
 	import { splitNumber } from '$helpers/split_number';
+	import { guideServiceTypeAdapter } from '$models/guides_service/adapters';
 
 	const {
 		cancelEndpoint: cancelEndpointStatus,
@@ -48,47 +49,36 @@
 		cancelEndpoint();
 	});
 
+	onMount(async () => {
+		await getGuidesStatus();
+	});
+
 	export let guideSelected: TGuideServiceDOM;
 	export let isCreated: boolean;
 	export let mapCtl: IMap;
 
 	let markerList: Marker[] = [];
 
-	let naturalClientOriginCheck = true;
-	let naturalClientDestinationCheck = true;
-	let naturalClientOrigin: TNaturalClientDOM | undefined;
-	let naturalClientDestination: TNaturalClientDOM | undefined;
-	let legalClientOrigin: TLegalClientDOM | undefined;
-	let legalClientDestination: TLegalClientDOM | undefined;
-	let guideStatusOptions: TSelectOption[] = [];
-	let guideNoveltiesOptions: TSelectOption[] = [];
-	let guideTypeServicesOptions: TSelectOption[] = [];
-	let guideStatusId = '';
-	let guideNoveltyId = '';
-	let guideTypeServiceId = '';
+	let naturalClientOriginCheck = guideSelected.clientOrigin?.natural;
+	let naturalClientDestinationCheck = guideSelected.clientDestination?.natural;
+	let naturalClientOrigin = guideSelected.clientOrigin?.natural
+		? guideSelected.clientOrigin
+		: undefined;
+	let naturalClientDestination = guideSelected.clientDestination?.natural
+		? guideSelected.clientDestination
+		: undefined;
+	let legalClientOrigin = !guideSelected.clientOrigin?.natural
+		? guideSelected.clientOrigin
+		: undefined;
+	let legalClientDestination = !guideSelected.clientDestination?.natural
+		? guideSelected.clientDestination
+		: undefined;
+	let guideStatusOptions: TGuideServiceStatusDOM[] = [];
+	let guideNoveltiesOptions: TGuideServiceNoveltyDOM[] = [];
+	let guideTypeServicesOptions: TGuideServiceTypeServiceDOM[] = [];
 
-	$: if (naturalClientOriginCheck) legalClientOrigin = undefined;
-	else naturalClientOrigin = undefined;
-
-	$: if (guideSelected?.clientOrigin !== undefined) {
-		if (guideSelected.clientOrigin.natural) {
-			naturalClientOrigin = guideSelected.clientOrigin;
-			naturalClientOriginCheck = true;
-		} else {
-			legalClientOrigin = guideSelected.clientOrigin;
-			naturalClientOriginCheck = false;
-		}
-	}
-
-	$: if (guideSelected?.clientDestination !== undefined) {
-		if (guideSelected.clientDestination.natural) {
-			naturalClientDestination = guideSelected.clientDestination;
-			naturalClientDestinationCheck = true;
-		} else {
-			legalClientDestination = guideSelected.clientDestination;
-			naturalClientDestinationCheck = false;
-		}
-	}
+	$: guideSelected.clientOrigin = naturalClientOrigin || legalClientOrigin;
+	$: guideSelected.clientDestination = naturalClientDestination || legalClientDestination;
 
 	$: if (guideSelected.pointSaleOrigin && mapCtl !== undefined) {
 		const { latitude, longitude } = guideSelected.pointSaleOrigin;
@@ -105,26 +95,39 @@
 			const [status, novelties, servicesType] = await Promise.all([
 				callEndpointListStatus(getAllStatusCode('guides_service'), statusCodeAdapters),
 				callEndpointListStatus(getGuidesServiceNolveties(), statusCodeAdapters),
-				callEndpointListStatus(getGuidesServiceTypeServices(), statusCodeAdapters)
+				callEndpointListStatus(getGuidesServiceTypeServices(), guideServiceTypeAdapter)
 			]);
 
-			guideStatusOptions = status.map((status) => ({
-				label: status.name,
-				value: status.id
-			}));
-
-			guideNoveltiesOptions = novelties.map((status) => ({
-				label: status.name,
-				value: status.id
-			}));
-
-			guideTypeServicesOptions = servicesType.map((status) => ({
-				label: status.name,
-				value: status.id
-			}));
+			guideStatusOptions = status;
+			guideNoveltiesOptions = novelties;
+			guideTypeServicesOptions = servicesType;
 		} catch (e) {
 			console.log({ e });
 		}
+	};
+
+	const handleSearchNovelty = async (
+		search: string
+	): Promise<false | TGuideServiceNoveltyDOM[]> => {
+		return guideNoveltiesOptions.filter(({ name }) =>
+			name.toUpperCase().includes(search.toUpperCase())
+		);
+	};
+
+	const handleSearchStatus = async (
+		search: string
+	): Promise<false | TGuideServiceStatusDOM[]> => {
+		return guideStatusOptions.filter(({ name }) =>
+			name.toUpperCase().includes(search.toUpperCase())
+		);
+	};
+
+	const handleSearchService = async (
+		search: string
+	): Promise<false | TGuideServiceTypeServiceDOM[]> => {
+		return guideTypeServicesOptions.filter(({ tab }) =>
+			tab.toUpperCase().includes(search.toUpperCase())
+		);
 	};
 
 	const handleSearchClientNatural = async (
@@ -132,8 +135,12 @@
 	): Promise<false | TNaturalClientDOM[]> => {
 		try {
 			if (search === '') return false;
+			if (search === (guideSelected.clientOrigin as TNaturalClientDOM)?.documentId)
+				return false;
+			if (search === (guideSelected.clientDestination as TNaturalClientDOM)?.documentId)
+				return false;
 
-			cancelEndpoint();
+			// cancelEndpoint();
 			return await callEndpointList(
 				getAllNaturalClients({
 					documentId: search,
@@ -153,6 +160,10 @@
 	): Promise<false | TLegalClientDOM[]> => {
 		try {
 			if (search === '') return false;
+			if (search === (guideSelected.clientOrigin as TLegalClientDOM)?.nit) return false;
+			if (search === (guideSelected.clientDestination as TLegalClientDOM)?.nit)
+				return false;
+
 			cancelEndpoint();
 			return await callEndpointList(
 				getAllLegalClients({
@@ -173,6 +184,9 @@
 	): Promise<false | TGuideServicePointSaleDOM[]> => {
 		try {
 			if (search === '') return false;
+			if (search === guideSelected.pointSaleOrigin?.address) return false;
+			if (search === guideSelected.pointSaleDestination?.address) return false;
+
 			cancelEndpoint();
 			return await callEndpointList(
 				getAllPointsSale({
@@ -201,6 +215,18 @@
 		guideSelected = guideSelected;
 	};
 
+	const handleFormatNovelty = (novelty?: TGuideServiceNoveltyDOM): string => {
+		return novelty ? novelty.name : '';
+	};
+
+	const handleFormatStatus = (novelty?: TGuideServiceStatusDOM): string => {
+		return novelty ? novelty.name : '';
+	};
+
+	const handleFormatService = (novelty?: TGuideServiceTypeServiceDOM): string => {
+		return novelty ? novelty.tab : '';
+	};
+
 	const handleFormatPointsSale = (point?: TGuideServicePointSaleDOM) => {
 		return point ? point.name : '';
 	};
@@ -212,8 +238,6 @@
 	const handleFormatLegalClient = (client?: TLegalClientDOM) => {
 		return client ? client.nit : '';
 	};
-
-	getGuidesStatus();
 </script>
 
 <section>
@@ -227,29 +251,39 @@
 						<h2>Precio: ${splitNumber(guideSelected.price)}</h2>
 					</div>
 					<div class="noveties_status">
-						<SelectNoHelpertext
-							bind:value={guideNoveltyId}
-							options={guideNoveltiesOptions}
+						<Autocomplete
+							bind:value={guideSelected.novelty}
+							text={guideSelected.novelty?.name}
+							getOptionLabel={handleFormatNovelty}
+							required
 							variant="outlined"
 							label="Novedad"
 							disabled={isCreated}
+							onSearch={handleSearchNovelty}
 							style="width: 100%;"
+							textfieldStyle="width: 100%;"
 						/>
 						<SeparatorNotLine style="margin-top: 10px;" />
-						<SelectNoHelpertext
-							bind:value={guideStatusId}
-							options={guideStatusOptions}
+						<Autocomplete
+							bind:value={guideSelected.status}
+							text={guideSelected.status?.name}
+							getOptionLabel={handleFormatStatus}
+							required
 							variant="outlined"
 							label="Estado"
 							disabled={isCreated}
+							onSearch={handleSearchStatus}
 							style="width: 49%;"
 						/>
-						<SelectNoHelpertext
-							bind:value={guideTypeServiceId}
-							options={guideTypeServicesOptions}
+						<Autocomplete
+							bind:value={guideSelected.service}
+							text={guideSelected.service?.tab}
+							getOptionLabel={handleFormatService}
+							required
 							variant="outlined"
-							disabled={!isCreated}
 							label="Tipo de Servicio"
+							disabled={!isCreated}
+							onSearch={handleSearchService}
 							style="width: 49%;"
 						/>
 					</div>
@@ -263,7 +297,7 @@
 			<Content>
 				<FormField>
 					<span>Cliente Natural</span>
-					<Switch bind:checked={naturalClientOriginCheck} />
+					<Switch disabled={!isCreated} bind:checked={naturalClientOriginCheck} />
 					<span>
 						{#if naturalClientOriginCheck}
 							Si
@@ -283,26 +317,28 @@
 								required
 								variant="outlined"
 								label="Documento"
+								disabled={!isCreated}
 								onSearch={handleSearchClientNatural}
 							/>
 						{:else}
 							<Autocomplete
 								bind:value={legalClientOrigin}
-								text={legalClientOrigin?.nit}
+								text={legalClientOrigin?.nit || ''}
 								getOptionLabel={handleFormatLegalClient}
 								required
 								variant="outlined"
 								label="Nit"
+								disabled={!isCreated}
 								onSearch={handleSearchClientLegal}
 							/>
 						{/if}
 
-						{#if naturalClientOrigin || legalClientOrigin}
+						{#if guideSelected.clientOrigin !== undefined}
 							<SeparatorNotLine style="margin-top: 10px;" />
 							<div>
 								<FormField>
 									<span>Requiere Recogida</span>
-									<Switch bind:checked={guideSelected.collection} />
+									<Switch disabled={!isCreated} bind:checked={guideSelected.collection} />
 									<span>
 										{#if guideSelected.collection}
 											Si
@@ -314,29 +350,27 @@
 							</div>
 						{/if}
 					</div>
-					{#if naturalClientOrigin}
+					{#if naturalClientOrigin?.natural && naturalClientOrigin?.id}
 						<Paper elevation={0} style="padding: 0 20px;">
 							<Title>
-								{naturalClientOrigin.firstName}
-								{naturalClientOrigin.lastName}
+								{naturalClientOrigin?.firstName}
+								{naturalClientOrigin?.lastName}
 							</Title>
 							<Content>
-								Dirección: {naturalClientOrigin.address}
+								Dirección: {naturalClientOrigin?.address}
 								<SeparatorNotLine />
-								Telefono: {naturalClientOrigin.numberMovil}
+								Telefono: {naturalClientOrigin?.numberMovil}
 							</Content>
 						</Paper>
-					{/if}
-
-					{#if legalClientOrigin}
+					{:else if !legalClientOrigin?.natural && legalClientOrigin?.id}
 						<Paper elevation={0} style="padding: 0 20px;">
 							<Title>
-								{legalClientOrigin.businessName}
+								{legalClientOrigin?.businessName}
 							</Title>
 							<Content>
-								Dirección: {legalClientOrigin.address}
+								Dirección: {legalClientOrigin?.address}
 								<SeparatorNotLine />
-								Telefono: {legalClientOrigin.numberMovil}
+								Telefono: {legalClientOrigin?.numberMovil}
 							</Content>
 						</Paper>
 					{/if}
@@ -349,7 +383,7 @@
 			<Content>
 				<FormField>
 					<span>Cliente Natural</span>
-					<Switch bind:checked={naturalClientDestinationCheck} />
+					<Switch disabled={!isCreated} bind:checked={naturalClientDestinationCheck} />
 					<span>
 						{#if naturalClientDestinationCheck}
 							Si
@@ -364,48 +398,50 @@
 						{#if naturalClientDestinationCheck}
 							<Autocomplete
 								bind:value={naturalClientDestination}
-								text={naturalClientDestination?.documentId}
+								text={naturalClientDestination?.documentId || ''}
 								getOptionLabel={handleFormatNaturalClient}
 								required
 								variant="outlined"
 								label="Documento"
+								disabled={!isCreated}
 								onSearch={handleSearchClientNatural}
 							/>
 						{:else}
 							<Autocomplete
 								bind:value={legalClientDestination}
-								text={legalClientDestination?.nit}
+								text={legalClientDestination?.nit || ''}
 								getOptionLabel={handleFormatLegalClient}
 								required
 								variant="outlined"
 								label="Nit"
+								disabled={!isCreated}
 								onSearch={handleSearchClientLegal}
 							/>
 						{/if}
 					</div>
-					{#if naturalClientDestination}
+					{#if naturalClientDestination?.natural && naturalClientDestination?.id}
 						<Paper elevation={0} style="padding: 0 20px;">
 							<Title>
-								{naturalClientDestination.firstName}
-								{naturalClientDestination.lastName}
+								{naturalClientDestination?.firstName}
+								{naturalClientDestination?.lastName}
 							</Title>
 							<Content>
-								Dirección: {naturalClientDestination.address}
+								Dirección: {naturalClientDestination?.address}
 								<SeparatorNotLine />
-								Telefono: {naturalClientDestination.numberMovil}
+								Telefono: {naturalClientDestination?.numberMovil}
 							</Content>
 						</Paper>
 					{/if}
 
-					{#if legalClientDestination}
+					{#if !legalClientDestination?.natural && legalClientDestination?.id}
 						<Paper elevation={0} style="padding: 0 20px;">
 							<Title>
-								{legalClientDestination.businessName}
+								{legalClientDestination?.businessName}
 							</Title>
 							<Content>
-								Dirección: {legalClientDestination.address}
+								Dirección: {legalClientDestination?.address}
 								<SeparatorNotLine />
-								Telefono: {legalClientDestination.numberMovil}
+								Telefono: {legalClientDestination?.numberMovil}
 							</Content>
 						</Paper>
 					{/if}
@@ -427,6 +463,7 @@
 								label="Unidades"
 								required
 								style="margin-right: 10px;"
+								disabled={!isCreated}
 							/>
 							<Textfield
 								bind:value={commodity.weight}
@@ -436,6 +473,7 @@
 								prefix="KG"
 								required
 								style="margin-right: 10px;"
+								disabled={!isCreated}
 							/>
 							{#if i === 0}
 								<ButtonFab
@@ -443,6 +481,7 @@
 									color="secondary"
 									mini
 									on:click={handleAddCommodity}
+									exited={!isCreated}
 								/>
 							{:else}
 								<ButtonFab
@@ -450,6 +489,7 @@
 									color="secondary"
 									mini
 									on:click={() => handleRemoveCommodity(i)}
+									exited={!isCreated}
 								/>
 							{/if}
 						</div>
@@ -477,6 +517,7 @@
 								onSearch={handleSearchPointsSale}
 								style="width: 100%;"
 								textfieldStyle="width: 100%;"
+								disabled={!isCreated}
 							/>
 							{#if guideSelected.pointSaleOrigin}
 								<SeparatorNotLine style="margin-top: 10px;" />
@@ -496,6 +537,7 @@
 								onSearch={handleSearchPointsSale}
 								style="width: 100%;"
 								textfieldStyle="width: 100%;"
+								disabled={!isCreated}
 							/>
 
 							{#if guideSelected.pointSaleDestination}
@@ -504,7 +546,13 @@
 							{/if}
 						</div>
 					</div>
-					<Map bind:mapCtl bind:markerList width={600} height={600} />
+					<Map
+						disabled={!isCreated}
+						bind:mapCtl
+						bind:markerList
+						width={600}
+						height={600}
+					/>
 				</div>
 			</Content>
 		</Paper>
@@ -514,7 +562,7 @@
 <style>
 	section {
 		width: fit-content;
-		margin: 50px auto;
+		margin: 100px auto;
 
 		& .box_general {
 			display: flex;

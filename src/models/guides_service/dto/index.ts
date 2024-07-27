@@ -46,6 +46,7 @@ export type TGuideServiceNoveltyAPI = {
 export type TGuideServiceTypeServiceAPI = {
 	_id: string;
 	name: string;
+	tab: string;
 };
 
 // User in Guide
@@ -148,6 +149,18 @@ export class GuideServicePointSaleAPI implements TGuideServicePointSaleAPI {
 		this.latitude = pointSale.latitude;
 		this.longitude = pointSale.longitude;
 		this.budget = pointSale.budget;
+	}
+}
+
+export class GuideServiceTypeServiceAPI implements TGuideServiceTypeServiceAPI {
+	_id: string;
+	name: string;
+	tab: string;
+
+	constructor(svc: TGuideServiceTypeServiceAPI) {
+		this._id = svc._id;
+		this.name = svc.name;
+		this.tab = svc.tab;
 	}
 }
 

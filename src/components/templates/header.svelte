@@ -6,7 +6,6 @@
 	import { version } from '$app/environment';
 	import ButtonIcon from '$atoms/button_icon.svelte';
 	import { appTheme } from '$stores/app_theme';
-	import Tooltip from '$atoms/tooltip.svelte';
 	import { profileStore } from '$stores/profile';
 	import List, { Item, Text } from '@smui/list';
 	import ProfileView from '$organisms/profile_view.svelte';
@@ -14,6 +13,7 @@
 	import { UserPictureDOM, type TUserPictureDOM } from '$models/users/entities';
 	import { updateOneUserPicture } from '$services/users';
 	import MenuSurface from '@smui/menu-surface';
+	import { goto } from '$app/navigation';
 
 	let menu: MenuSurface;
 	let anchor: HTMLDivElement;
@@ -29,7 +29,6 @@
 	$: updateUserPicture(userPicture);
 
 	$: iconAppTheme = $appTheme === 'light';
-	$: iconAppThemeTooltip = $appTheme === 'light' ? 'Modo Oscuro' : 'Modo Claron';
 
 	const updateUserPicture = async (userPicture: TUserPictureDOM) => {
 		try {
@@ -54,7 +53,10 @@
 
 	const toggleAppTheme = () => appTheme.toogle();
 	const openMenu = () => menu.setOpen(true);
-	const handleLogout = () => profileStore.clear();
+	const handleLogout = () => {
+		goto('/auth/login');
+		profileStore.clear();
+	};
 </script>
 
 {#if $profileStore !== undefined}
@@ -65,16 +67,14 @@
 				<P style="margin-left: 20px;">v.{version}</P>
 			</Section>
 			<Section style="justify-content: flex-end; padding-right: 30px;">
-				<Tooltip content={iconAppThemeTooltip}>
-					<ButtonIcon
-						icon="dark_mode"
-						iconOn="light_mode"
-						size="normal"
-						iconSize={35}
-						bind:pressed={iconAppTheme}
-						on:click={toggleAppTheme}
-					/>
-				</Tooltip>
+				<ButtonIcon
+					icon="dark_mode"
+					iconOn="light_mode"
+					size="normal"
+					iconSize={35}
+					bind:pressed={iconAppTheme}
+					on:click={toggleAppTheme}
+				/>
 
 				<div bind:this={anchor}>
 					<ButtonIcon
