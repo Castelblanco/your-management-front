@@ -6,7 +6,7 @@
 	import Header from '$templates/header.svelte';
 	import Navigation from '$templates/navigation.svelte';
 
-	$: if (!profileStore) goto('/auth/login');
+	$: if (!$profileStore) goto('/auth/login');
 
 	const deviceTheme = matchMedia('(prefers-color-scheme: dark)');
 	deviceTheme.addEventListener('change', ({ matches }) => {
@@ -25,7 +25,7 @@
 		<link rel="stylesheet" href="/smui-dark.css" media="screen" />
 		<link rel="icon" href="/favicon-dark.png" />
 	{:else}
-		<link rel="stylesheet" href="/smui.css" />
+		<link rel="stylesheet" href="/smui.css" media="screen" />
 		<link rel="icon" href="/favicon-light.png" />
 	{/if}
 </svelte:head>
