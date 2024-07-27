@@ -1,4 +1,6 @@
-FROM oven/bun:1.1.20-alpine AS builder
+FROM node:20
+RUN npm install -g bun
+# Install Bun.js
 WORKDIR /app
 COPY . .
 
