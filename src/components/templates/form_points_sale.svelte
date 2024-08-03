@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Marker, type Map as IMap } from '@tomtom-international/web-sdk-maps';
 	import { services } from '@tomtom-international/web-sdk-services';
-	import { PUBLIC_TOMTOM_API_KEY } from '$env/static/public';
+
 	import Autocomplete from '$atoms/autocomplete.svelte';
 	import Paper, { Title, Content } from '@smui/paper';
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
@@ -34,7 +34,7 @@
 
 			resetMakers();
 			const { results } = await services.fuzzySearch({
-				key: PUBLIC_TOMTOM_API_KEY,
+				key: 'TieIs3us8t4Poj9ngPtxhZIt7UwGL6qE',
 				query,
 				countrySet: 'CO'
 			});

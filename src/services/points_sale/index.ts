@@ -3,7 +3,6 @@ import { buildCreateOne } from './create_one';
 import { buildGetOne } from './get_one';
 import { buildUpdateOne } from './update_one';
 
-import { PUBLIC_API_LOCAL } from '$env/static/public';
 import type { TPointSaleDOM, TPointSaleFilterDOM } from '$models/points_sale/entities';
 import { abortController } from '$tools/index';
 import axios, { type AxiosInstance } from 'axios';
@@ -20,7 +19,7 @@ export type Dependencies = {
 };
 
 const http = axios.create({
-	baseURL: `${PUBLIC_API_LOCAL}/v1/point-sales`
+	baseURL: `https://dev-server-your-management.koyeb.app/v1/point-sales`
 });
 
 const dependencies: Dependencies = {

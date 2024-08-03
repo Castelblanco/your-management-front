@@ -11,7 +11,7 @@
 		services,
 		type FuzzySearchResult
 	} from '@tomtom-international/web-sdk-services';
-	import { PUBLIC_TOMTOM_API_KEY } from '$env/static/public';
+
 	import { onMount, tick } from 'svelte';
 	import { streetDark, streetLight } from '$lib/index';
 	import { appTheme } from '$stores/app_theme';
@@ -46,7 +46,7 @@
 
 	onMount(async () => {
 		mapCtl = map({
-			key: PUBLIC_TOMTOM_API_KEY,
+			key: 'TieIs3us8t4Poj9ngPtxhZIt7UwGL6qE',
 			container,
 			style: $appTheme === 'dark' ? (streetDark as any) : streetLight,
 			center: [-72.9301367, 4.1156735], // Colombia Coordinates
@@ -61,7 +61,7 @@
 			if (disabled) return;
 			resetMakers();
 			const res = await services.reverseGeocode({
-				key: PUBLIC_TOMTOM_API_KEY,
+				key: 'TieIs3us8t4Poj9ngPtxhZIt7UwGL6qE',
 				position: e.lngLat
 			});
 

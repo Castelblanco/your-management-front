@@ -3,7 +3,6 @@ import { buildCreateOne } from './create_one';
 import { buildGetOne } from './get_one';
 import { buildUpdateOne } from './update_one';
 
-import { PUBLIC_API_LOCAL } from '$env/static/public';
 import { abortController } from '$tools/index';
 import axios, { type AxiosInstance } from 'axios';
 import { qs } from '$helpers/index';
@@ -23,7 +22,7 @@ export type Dependencies = {
 };
 
 const http = axios.create({
-	baseURL: `${PUBLIC_API_LOCAL}/v1/clients/legals`
+	baseURL: `https://dev-server-your-management.koyeb.app/v1/clients/legals`
 });
 
 const dependencies: Dependencies = {

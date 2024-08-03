@@ -7,7 +7,7 @@
 	import ButtonFab from '$atoms/button_fab.svelte';
 	import { snackbarStore } from '$stores/index';
 	import { services } from '@tomtom-international/web-sdk-services';
-	import { PUBLIC_TOMTOM_API_KEY } from '$env/static/public';
+
 	import { createId } from '$tools/index';
 	import { liquidationFromPoint } from '$helpers/liquidation_from_point';
 	import {
@@ -117,7 +117,7 @@
 		if (routeId) mapCtl.removeLayer(routeId);
 
 		const res = await services.calculateRoute({
-			key: PUBLIC_TOMTOM_API_KEY,
+			key: 'TieIs3us8t4Poj9ngPtxhZIt7UwGL6qE',
 			locations: [
 				[newGuide.pointSaleOrigin.longitude, newGuide.pointSaleOrigin.latitude],
 				[newGuide.pointSaleDestination.longitude, newGuide.pointSaleDestination.latitude]
