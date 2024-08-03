@@ -3,6 +3,7 @@ RUN npm install -g bun
 # Install Bun.js
 WORKDIR /app
 COPY . .
+COPY .env .env
 
 RUN bun install
 RUN bun run build
