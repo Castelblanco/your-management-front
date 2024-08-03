@@ -45,6 +45,6 @@
 
 	/* Firefox */
 	:global(input[type='number']) {
-		-moz-appearance: textfield;
+		-webkit-moz-appearance: textfield;
 	}
 </style>
