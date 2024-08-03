@@ -3,8 +3,8 @@ services:
   your-management-front:
     container_name: your-management-front
     build: .
-    environment:
-      PUBLIC_API_LOCAL: https://dev-server-your-management.koyeb.app
-      PUBLIC_TOMTOM_API_KEY: TieIs3us8t4Poj9ngPtxhZIt7UwGL6qE
+    # environment:
+    #   PUBLIC_API_LOCAL: https://dev-server-your-management.koyeb.app
+    #   PUBLIC_TOMTOM_API_KEY: TieIs3us8t4Poj9ngPtxhZIt7UwGL6qE
     ports:
       - 5000:3000

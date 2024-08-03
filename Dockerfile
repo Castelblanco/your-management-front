@@ -3,7 +3,8 @@ RUN npm install -g bun
 # Install Bun.js
 WORKDIR /app
 COPY . .
-COPY .env .env
+RUN echo "PUBLIC_API_LOCAL=$PUBLIC_API_LOCAL"
+RUN echo "PUBLIC_TOMTOM_API_KEY=$PUBLIC_TOMTOM_API_KEY"
 
 RUN bun install
 RUN bun run build
