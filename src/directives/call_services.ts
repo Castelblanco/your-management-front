@@ -5,6 +5,7 @@ import { type TListResponses } from '$common/responses/list_response';
 import { snackbarStore } from '$stores/snackbar';
 import { type AxiosResponse } from 'axios';
 import { get, writable } from 'svelte/store';
+import { formatTextError } from '../errors/map_errors';
 
 type TServiceResponse<T> = {
 	response: Promise<AxiosResponse<T>>;
@@ -29,7 +30,7 @@ export const callServices = () => {
 			const error = new ApiError(err?.response?.data);
 			errorMessage.set(error);
 			snackbarStore.change({
-				title: error.message,
+				title: formatTextError(error),
 				closeAction: true
 			});
 			throw error;
@@ -51,9 +52,7 @@ export const callServices = () => {
 			const error = new ApiError(err?.response?.data);
 			errorMessage.set(error);
 			snackbarStore.change({
-				title: error.metadata
-					? error.metadata.error || error.metadata.message
-					: error.message,
+				title: formatTextError(error),
 				closeAction: true
 			});
 			throw error;
@@ -71,9 +70,7 @@ export const callServices = () => {
 			const error = new ApiError(err?.response?.data);
 			errorMessage.set(error);
 			snackbarStore.change({
-				title: error.metadata
-					? error.metadata.error || error.metadata.message
-					: error.message,
+				title: formatTextError(error),
 				closeAction: true
 			});
 		} finally {

@@ -6,6 +6,7 @@ export class ApiError {
 		status: number;
 		error: string;
 		message: string;
+		at: string;
 	};
 
 	constructor(err: any) {
