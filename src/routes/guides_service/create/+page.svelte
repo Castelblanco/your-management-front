@@ -48,8 +48,8 @@
 	let guideStatusOptions: TStatusCodeDOM[] = [];
 	let guideNoveltiesOptions: TStatusCodeDOM[] = [];
 	let newGuide: TGuideServiceDOM = {
-		id: '',
-		number: 0,
+		id: undefined as any,
+		number: undefined as any,
 		commodity: [
 			{
 				units: 0,
@@ -62,8 +62,6 @@
 		updatedAt: new Date(),
 		user: $profileStore
 	};
-
-	$: console.log({ newGuide });
 
 	const getGuidesStatus = async () => {
 		try {
@@ -158,8 +156,6 @@
 		const novelty = guideNoveltiesOptions.find(({ name }) => name === 'N/A');
 		const status = guideStatusOptions.find(({ name }) => name === 'Activo');
 
-		console.log({ status, guideStatusOptions });
-
 		newGuide.novelty = {
 			id: `${novelty?.id}`,
 			name: ''
@@ -171,10 +167,6 @@
 
 		newGuide.createdAt = new Date();
 		newGuide.updatedAt = new Date();
-
-		console.log({
-			newGuide
-		});
 
 		const guide = await callEndpointApi(
 			createOneGuideService(newGuide),

@@ -2,17 +2,12 @@
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
 	import type { TSelectOption } from '$molecules/types/select';
 	import { callServices } from '$directives/call_services';
-	import {
-		UserPictureDOM,
-		type TUserDOM,
-		type TUserPictureDOM
-	} from '$models/users/entities';
+	import { type TUserDOM, type TUserPictureDOM } from '$models/users/entities';
 	import { onDestroy } from 'svelte';
 	import Dialog, { Actions, Content, Header, Title } from '@smui/dialog';
-	import ModalCropper from '$organisms/modal_cropper.svelte';
 	import Button from '$atoms/button.svelte';
 	import FormUser from '$organisms/form_user.svelte';
-	import { createOneUser, updateOneUser, updateOneUserPicture } from '$services/users';
+	import { createOneUser, updateOneUser } from '$services/users';
 	import { userAdapters } from '$models/users/adapters';
 	import { STATUS_CODE } from '$constants/status_code';
 
@@ -36,15 +31,6 @@
 		id: '',
 		url: ''
 	};
-	let fileList: FileList | undefined;
-	let showCropper = false;
-	let inputFile: HTMLInputElement;
-
-	let loadingPicture = false;
-
-	$: updateUserPicture(userPicture);
-
-	$: console.log({ userPicture });
 
 	const handleCreateUser = async () => {
 		try {
@@ -83,26 +69,6 @@
 			console.log({ e });
 		}
 	};
-
-	const updateUserPicture = async (userPicture: TUserPictureDOM) => {
-		try {
-			console.log('change picture', { userPicture });
-			if (userPicture.url === '') return;
-
-			loadingPicture = true;
-			const { response } = await updateOneUserPicture(userSelect.id, userPicture);
-			const { item } = (await response).data;
-
-			userSelect.picture = new UserPictureDOM({
-				id: item._id,
-				url: item.url
-			});
-		} catch (e) {
-			console.log({ e });
-		} finally {
-			loadingPicture = false;
-		}
-	};
 </script>
 
 <Dialog
@@ -123,20 +89,11 @@
 	<SeparatorNotLine style="margin-top: 5px;" />
 	<Content>
 		<FormUser
-			bind:fileList
 			bind:confirmPassword
 			bind:userSelect
-			bind:inputFile
 			{userRoles}
 			{userStatusCode}
 			{isCreate}
-			pictureLoading={loadingPicture}
-		/>
-		<ModalCropper
-			bind:open={showCropper}
-			bind:fileList
-			bind:imageCrop={userPicture.url}
-			bind:inputFile
 		/>
 	</Content>
 	<Actions>

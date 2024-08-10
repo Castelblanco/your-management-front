@@ -4,7 +4,6 @@
 	import SeparatorNotLine from '$atoms/separator_not_line.svelte';
 	import Map from '$organisms/map.svelte';
 	import Textfield from '$atoms/textfield.svelte';
-	import Icon from '$atoms/icon.svelte';
 	import type { TSelectOption } from '$molecules/types/select';
 	import SelectNoHelpertext from '$molecules/select_no_helpertext.svelte';
 	import { callServices } from '$directives/call_services';
@@ -13,7 +12,6 @@
 	import type { TUserDOM, TUserPointSaleDOM } from '$models/users/entities';
 	import Autocomplete from '@smui-extra/autocomplete';
 	import { onDestroy, onMount, tick } from 'svelte';
-	import CircularLoading from '$atoms/circular_loading.svelte';
 
 	const { callEndpointList, cancelEndpoint } = callServices();
 	export let userSelect: TUserDOM;
@@ -21,9 +19,6 @@
 	export let userRoles: TSelectOption[];
 	export let isCreate = false;
 	export let confirmPassword = '';
-	export let fileList: FileList | undefined;
-	export let inputFile: HTMLInputElement | undefined = undefined;
-	export let pictureLoading = false;
 
 	onMount(async () => {
 		await tick();
@@ -125,12 +120,7 @@
 			{#if !isCreate}
 				<SeparatorNotLine style="margin-top: 20px;" />
 				<div class="box_picture">
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<div
-						class="picture_tray"
-						on:mouseenter={toggleShowChangePicture}
-						on:mouseleave={toggleShowChangePicture}
-					>
+					<div class="picture_tray">
 						{#if userSelect.picture?.url}
 							<img
 								style="width: 200px; height: 200px;"
@@ -144,30 +134,8 @@
 								alt="Foto de Perfil"
 							/>
 						{/if}
-						{#if showChangePicture && !pictureLoading}
-							<label for="picture_id">
-								<div class="change_picture">
-									<Icon icon="camera_alt" style="width: 24px; height: 24px;" />
-									<p>Cambiar Foto de Perfil</p>
-								</div>
-							</label>
-						{/if}
-						{#if pictureLoading}
-							<div class="change_picture_loading">
-								<CircularLoading style="width: 40px; height: 40px;" indeterminate />
-							</div>
-						{/if}
 					</div>
 				</div>
-				<input
-					bind:files={fileList}
-					bind:this={inputFile}
-					style="display: none;"
-					type="file"
-					name="picture"
-					id="picture_id"
-					accept="image/*"
-				/>
 			{/if}
 
 			<SeparatorNotLine style="margin-top: 20px;" />
