@@ -5,7 +5,7 @@
 	import IconButton from '@smui/icon-button';
 	import LinearLoading from '$atoms/linear_loading.svelte';
 	import { callServices } from '$directives/call_services';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import P from '$atoms/p.svelte';
 	import { statusCodeAdapters } from '$models/status_code/adapters';
 	import Textfield from '$atoms/textfield.svelte';
@@ -35,6 +35,10 @@
 		loading: loadingStatus,
 		cancelEndpoint: cancelEndpointStatus
 	} = callServices();
+
+	onMount(async () => {
+		await getStatusCode();
+	});
 
 	onDestroy(() => {
 		cancelEndpoint();
@@ -101,20 +105,28 @@
 	$: disableUpdate = validObjects(clientEdit, clientEditClone);
 
 	// Pagination
-	let rowsPerPage = 10;
-	let page = 0;
-	$: start = page * rowsPerPage;
+	let limit = 10;
+	let offset = 1;
+	let totalUsers = 0;
+	$: page = limit + offset;
+	$: end = Math.min(page - 1, totalUsers);
+	$: lastPage = Math.max(totalUsers, 1);
+	// $: if (offset > lastPage) offset = lastPage;
+
+	$: console.log({ page: limit + offset, lastPage });
+
+	/* $: start = page * rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, clients.length);
 	$: lastPage = Math.max(Math.ceil(clients.length / rowsPerPage) - 1, 0);
-	$: if (page > lastPage) page = lastPage;
+	$: if (page > lastPage) page = lastPage; */
 
 	const getStatusCode = async () => {
 		try {
-			const status = await callEndpointListStatus(
+			const { items } = await callEndpointListStatus(
 				getAllStatusCode('clients'),
 				statusCodeAdapters
 			);
-			const statusMap = status.map(({ name, id }) => ({ label: name, value: id }));
+			const statusMap = items.map(({ name, id }) => ({ label: name, value: id }));
 
 			statusMap.splice(0, 0, {
 				label: '',
@@ -126,17 +138,19 @@
 		}
 	};
 
-	const handleSearchClient = async (statusId?: string) => {
+	const handleSearchClient = async (limit: number, offset: number, statusId?: string) => {
 		try {
-			clients = await callEndpointList(
+			const { items, total } = await callEndpointList(
 				getAllNaturalClients({
 					...filters,
 					statusId,
-					limit: rowsPerPage,
-					offset: page
+					limit,
+					offset
 				}),
 				naturalClientsAdapters
 			);
+			if (totalUsers !== total) totalUsers = total;
+			clients = items;
 		} catch (e) {
 			console.log({ e });
 		}
@@ -159,7 +173,7 @@
 				naturalClientsAdapters
 			);
 
-			if (clients.length >= rowsPerPage) clients.pop();
+			if (clients.length >= limit) clients.pop();
 			clients = [client, ...clients];
 		} catch (e) {
 			console.log({ e });
@@ -186,14 +200,13 @@
 		showEdit = true;
 	};
 
-	const handleAddPage = () => page++;
-	const handleSubtractPage = () => page--;
-	const handleFirstPage = () => (page = 0);
-	const handleLastPage = () => (page = lastPage);
+	const handleAddPage = () => (offset += limit);
+	const handleSubtractPage = () => (offset -= limit);
+	const handleFirstPage = () => (offset = 1);
+	const handleLastPage = () => (offset = lastPage);
 	const toggleOpenNewClient = () => (openNewClient = !openNewClient);
 
-	getStatusCode();
-	$: handleSearchClient(filterStatus);
+	$: handleSearchClient(limit, offset, filterStatus);
 </script>
 
 <ButtonFab
@@ -203,7 +216,9 @@
 />
 <section>
 	<Card padded>
-		<form on:submit|preventDefault={() => handleSearchClient(filterStatus)}>
+		<form
+			on:submit|preventDefault={() => handleSearchClient(limit, offset, filterStatus)}
+		>
 			<TextfieldWithIcon
 				bind:value={filters.firstName}
 				variant="outlined"
@@ -252,40 +267,40 @@
 					<Label>Filas por Pagina</Label>
 					<SelectNoHelpertext
 						options={pagesOptions}
-						value={rowsPerPage}
+						bind:value={limit}
 						variant="outlined"
 					/>
 
 					<span style="margin-left: 40px;">
-						{start + 1}-{end} of {clients.length}
+						{offset}-{end} of {totalUsers}
 					</span>
 				</svelte:fragment>
 
 				<IconButton
 					class="material-icons"
 					on:click={handleFirstPage}
-					disabled={page === 0}
+					disabled={offset <= 1}
 				>
 					first_page
 				</IconButton>
 				<IconButton
 					class="material-icons"
 					on:click={handleSubtractPage}
-					disabled={page === 0}
+					disabled={offset <= 1}
 				>
 					chevron_left
 				</IconButton>
 				<IconButton
 					class="material-icons"
 					on:click={handleAddPage}
-					disabled={page === lastPage}
+					disabled={offset >= lastPage}
 				>
 					chevron_right
 				</IconButton>
 				<IconButton
 					class="material-icons"
 					on:click={handleLastPage}
-					disabled={page === lastPage}
+					disabled={offset >= lastPage}
 				>
 					last_page
 				</IconButton>

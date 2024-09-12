@@ -25,7 +25,10 @@ export const callServices = () => {
 		if (call.controller) controller = call.controller;
 		try {
 			const { data } = await call.response;
-			return data.items.map(adapters.apiToDom);
+			return {
+				items: data.items.map(adapters.apiToDom),
+				total: data.total
+			};
 		} catch (err: any) {
 			const error = new ApiError(err?.response?.data);
 			errorMessage.set(error);

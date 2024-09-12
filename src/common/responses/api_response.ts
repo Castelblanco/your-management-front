@@ -1,9 +1,4 @@
-export type TApiResponses<T> = {
-	item: T;
-	status: number;
-};
-
-export class ApiResponses<T> implements TApiResponses<T> {
+export class ApiResponses<T> {
 	item: T;
 	status: number;
 

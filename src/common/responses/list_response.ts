@@ -1,14 +1,11 @@
-export type TListResponses<T> = {
+export class ListResponse<T> {
 	items: T[];
-	status: number;
-};
-
-export class ListResponse<T> implements TListResponses<T> {
-	items: T[];
+	total: number;
 	status: number;
 
-	constructor(items: T[], status: number) {
+	constructor(items: T[], total: number, status: number) {
 		this.items = items;
+		this.total = total;
 		this.status = status;
 	}
 }
