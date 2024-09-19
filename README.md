@@ -1,6 +1,8 @@
+# Your Management Front-End
+
 ## Developing
 
-Once you've created a project and installed dependencies with `bun install`, start a development server:
+Once you've created a project and installed dependencies with `bun i`, start a development server:
 
 ```bash
 bun dev
@@ -15,5 +17,3 @@ bun run build
 ```
 
 You can preview the production build with `bun preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

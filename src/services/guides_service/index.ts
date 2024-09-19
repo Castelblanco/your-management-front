@@ -3,40 +3,48 @@ import { buildCreateOne } from './create_one';
 import { buildGetOne } from './get_one';
 import { buildUpdateOne } from './update_one';
 
-import { abortController } from '$tools/index';
-import axios, { type AxiosInstance } from 'axios';
-import { qs } from '$helpers/index';
-import type { TAdapters } from '$common/base/adapters';
+import { abortController } from '@tools/index';
+import { type AxiosInstance } from 'axios';
+import { qs } from '@helpers/index';
+import type { TAdapters } from '@common/base/adapters';
 import type {
-	TGuideServiceDOM,
-	TGuideServiceFilterDOM
-} from '$models/guides_service/entities';
-import type { TGuideServiceAPI } from '$models/guides_service/dto';
-import { guidesServiceAdapters } from '$models/guides_service/adapters';
+    TGuideServiceDOM,
+    TGuideServiceFilterDOM,
+} from '@models/guides_service/entities';
+import type { TGuideServiceAPI } from '@models/guides_service/dto';
+import { guidesServiceAdapters } from '@models/guides_service/adapters';
 import { buildGetNovelties } from './get_novelties';
 import { buildGetServicesType } from './get_services_type';
+import { httpMonolith } from '@storages/axios/instances';
 
 export type Dependencies = {
-	qs: (filter: TGuideServiceFilterDOM) => string;
-	abortController: () => AbortController;
-	http: AxiosInstance;
-	adapter: TAdapters<TGuideServiceDOM, TGuideServiceAPI>;
+    qs: (filter: TGuideServiceFilterDOM) => string;
+    abortController: () => AbortController;
+    http: AxiosInstance;
+    adapter: TAdapters<TGuideServiceDOM, TGuideServiceAPI>;
 };
 
-const http = axios.create({
-	baseURL: `https://dev-server-your-management.koyeb.app/v1/guides_service`
-});
+export const PATH = '/v1/guides_service';
 
 const dependencies: Dependencies = {
-	qs,
-	abortController,
-	http,
-	adapter: guidesServiceAdapters
+    qs,
+    abortController,
+    http: httpMonolith,
+    adapter: guidesServiceAdapters,
 };
 
-export const getAllGuidesService = buildGetAll(dependencies);
-export const getGuidesServiceNolveties = buildGetNovelties(dependencies);
-export const getGuidesServiceTypeServices = buildGetServicesType(dependencies);
-export const getOneGuideService = buildGetOne(dependencies);
-export const createOneGuideService = buildCreateOne(dependencies);
-export const updateOneGuideService = buildUpdateOne(dependencies);
+export const getAll = buildGetAll(dependencies);
+export const getOne = buildGetOne(dependencies);
+export const createOne = buildCreateOne(dependencies);
+export const updateOne = buildUpdateOne(dependencies);
+export const getServicesType = buildGetServicesType(dependencies);
+export const getNolveties = buildGetNovelties(dependencies);
+
+export const guideServices = {
+    getAll,
+    getOne,
+    createOne,
+    updateOne,
+    getServicesType,
+    getNolveties,
+};

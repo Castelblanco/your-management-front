@@ -1,0 +1,19 @@
+.container {
+    width: 100%;
+    max-width: 1100px;
+}
+
+.box_general_info_dropdowns {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-auto-rows: 60px;
+    width: 50%;
+}
+
+.dropdown {
+    width: 50%;
+}
+
+.box_sender_info {
+    width: 49%;
+}

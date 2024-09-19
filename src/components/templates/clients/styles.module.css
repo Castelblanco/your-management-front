@@ -1,0 +1,55 @@
+.container {
+    width: 80%;
+    max-width: 830px;
+    margin: 40px auto;
+}
+
+.box_content {
+    padding: 16px;
+}
+
+.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 2fr));
+    grid-gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.box_content_edit {
+    width: 70%;
+    max-width: 830px;
+    padding: 16px;
+}
+
+.form_update {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
+    grid-gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.input {
+    width: 100%;
+}
+
+.table_container {
+    height: auto;
+    max-height: 400px;
+    overflow: auto;
+    border-radius: 4px;
+}
+
+.head_txt {
+    font-weight: 600;
+}
+
+.column_body {
+    cursor: pointer;
+}
+
+.not_found_txt {
+    margin: 10px auto;
+    text-align: center;
+}
