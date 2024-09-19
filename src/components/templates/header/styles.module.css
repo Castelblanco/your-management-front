@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    color: #fff !important;
+}
+
+.box_menu_app_version {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

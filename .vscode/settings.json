@@ -1,7 +1,0 @@
-{
-	"exportall.config.relExclusion": [
-		"/src/helpers/index.ts",
-		"/src/constants/index.ts",
-		"/src/tools/index.ts"
-	]
-}

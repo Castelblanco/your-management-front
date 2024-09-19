@@ -1,19 +1,17 @@
-import type { ListResponse } from '$common/responses/list_response';
-import type { TUserRoleAPI } from '$models/users/dto';
-import type { Dependencies } from '.';
+import type { ListResponse } from '@common/responses/list_response';
+import type { TUserRoleAPI } from '@models/users/dto';
+import { PATH, type Dependencies } from '.';
 
 export const buildGetAll = ({ abortController, http }: Dependencies) => {
-	const service = () => {
-		const controller = abortController();
-		const response = http.get<ListResponse<TUserRoleAPI>>(`/get-all`, {
-			signal: controller.signal
-		});
+    const service = () => {
+        const controller = abortController();
+        return {
+            response: http.get<ListResponse<TUserRoleAPI>>(`${PATH}/get-all`, {
+                signal: controller.signal,
+            }),
+            controller,
+        };
+    };
 
-		return {
-			response,
-			controller
-		};
-	};
-
-	return service;
+    return service;
 };

@@ -1,23 +1,26 @@
 import { buildGetAll } from './get_all';
 
-import { abortController } from '$tools/index';
-import axios, { type AxiosInstance } from 'axios';
-import { qs } from '$helpers/index';
-
-const http = axios.create({
-	baseURL: `https://dev-server-your-management.koyeb.app/v1/user-roles`
-});
+import { abortController } from '@tools/index';
+import { type AxiosInstance } from 'axios';
+import { qs } from '@helpers/index';
+import { httpMonolith } from '@storages/axios/instances';
 
 export type Dependencies = {
-	qs: (object: object) => string;
-	abortController: () => AbortController;
-	http: AxiosInstance;
+    qs: (object: object) => string;
+    abortController: () => AbortController;
+    http: AxiosInstance;
 };
+
+export const PATH = '/v1/user-roles';
 
 const dependencies: Dependencies = {
-	qs,
-	abortController,
-	http
+    qs,
+    abortController,
+    http: httpMonolith,
 };
 
-export const getAllUserRoles = buildGetAll(dependencies);
+const getAll = buildGetAll(dependencies);
+
+export const userRoleServices = {
+    getAll,
+};
