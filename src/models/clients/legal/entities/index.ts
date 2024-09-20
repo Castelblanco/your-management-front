@@ -14,13 +14,13 @@ export type TLegalClientStatusDOM = {
 };
 
 export type TLegalClientFilterDOM = {
+    limit: number;
+    offset: number;
     numberMovil?: string;
     address?: string;
     nit?: string;
     businessName?: string;
     statusId?: string;
-    limit: number;
-    offset: number;
     status?: boolean;
 };
 

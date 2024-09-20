@@ -10,28 +10,10 @@
 
 .form {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 2fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 2fr));
     grid-gap: 10px;
     width: 100%;
     margin-bottom: 10px;
-}
-
-.box_content_edit {
-    width: 70%;
-    max-width: 830px;
-    padding: 16px;
-}
-
-.form_update {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
-    grid-gap: 10px;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.input {
-    width: 100%;
 }
 
 .table_container {

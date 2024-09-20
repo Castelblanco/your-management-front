@@ -1,0 +1,17 @@
+.container {
+    width: 70%;
+    max-width: 830px;
+    padding: 16px;
+}
+
+.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
+    grid-gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.input:last-child {
+    grid-column: 1 / 3;
+}

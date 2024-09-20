@@ -1,47 +1,46 @@
 import { ApiError } from '@common/errors/api_error';
 import { STATUS_CODE } from '@constants/status_code';
 import { useCallServices } from '@hooks/use_call_services';
-import { naturalClientsAdapters } from '@models/clients/natural/adapters';
+import { legalClientsAdapters } from '@models/clients/legal/adapters';
 import {
-    NaturalClientDOM,
-    TNaturalClientDOM,
-    TNaturalClientFilterDOM,
-} from '@models/clients/natural/entities';
+    LegalClientDOM,
+    TLegalClientDOM,
+    TLegalClientFilterDOM,
+} from '@models/clients/legal/entities';
 import { TStatusCodeDOM } from '@models/status_code/entities';
-import { clientNaturalServices } from '@services/clients/natural';
+import { clientLegalServices } from '@services/clients/legal';
 import { useSnackbar } from '@storages/zustand/snackbar';
 import { useStatusCode } from '@storages/zustand/status_code';
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react';
 
-const INITIAL_STATE_CLIENT = new NaturalClientDOM({
+const INITIAL_STATE_CLIENT = new LegalClientDOM({
     id: '',
     numberMovil: '',
     address: '',
-    documentId: '',
-    firstName: '',
-    lastName: '',
-    natural: true,
+    nit: '',
+    businessName: '',
+    natural: false,
 });
 
-export const useClientsNaturals = () => {
+export const useClientsLegals = () => {
     const { setSnackbar, setSnackbarError } = useSnackbar();
     const { statusCode } = useStatusCode();
 
-    const [clients, setClients] = useState<TNaturalClientDOM[]>([]);
+    const [clients, setClients] = useState<TLegalClientDOM[]>([]);
     const [total, setTotal] = useState(1);
     const [offset, setOffset] = useState(0);
     const [limit, setLimit] = useState(10);
     const [statusCodeFilter, setStatusCodeFilter] = useState('');
-    const [filters, setFilters] = useState<TNaturalClientFilterDOM>({
+    const [filters, setFilters] = useState<TLegalClientFilterDOM>({
         limit: 0,
         offset: 0,
-        firstName: '',
-        lastName: '',
+        businessName: '',
+        nit: '',
         address: '',
     });
     const [showDetail, setShowDetail] = useState(false);
     const [showCreate, setShowCreate] = useState(false);
-    const [clientSelect, setClientSelect] = useState<TNaturalClientDOM>();
+    const [clientSelect, setClientSelect] = useState<TLegalClientDOM>();
     const [clientCreate, setClientCreate] = useState(INITIAL_STATE_CLIENT);
 
     const { loading, callEndpointList, callEndpointApi } = useCallServices();
@@ -53,17 +52,55 @@ export const useClientsNaturals = () => {
     const getClients = async () => {
         try {
             const { items, total: totals } = await callEndpointList(
-                clientNaturalServices.getAll({
+                clientLegalServices.getAll({
                     ...filters,
                     limit,
                     offset: offset === 0 ? 0 : offset * limit,
                     status: true,
                     statusId: statusCodeFilter,
                 }),
-                naturalClientsAdapters,
+                legalClientsAdapters,
             );
             setClients([...items]);
             if (total !== totals) setTotal(totals);
+        } catch (e) {
+            setSnackbarError(e as ApiError);
+        }
+    };
+
+    const handleCreateClient = async () => {
+        try {
+            const status = statusCode.clients.find(
+                ({ name }) => name === STATUS_CODE.ACTIVE,
+            )!;
+            clientCreate.status = status;
+            const newClient = await callEndpointApi(
+                clientLegalServices.createOne(clientCreate),
+                legalClientsAdapters,
+            );
+            if (clients.length >= limit) clients.pop();
+            setClients([newClient, ...clients]);
+            setClientCreate(INITIAL_STATE_CLIENT);
+            toggleShowCreate();
+            setSnackbar('Cliente Creado');
+        } catch (e) {
+            setSnackbarError(e as ApiError);
+        }
+    };
+
+    const handleUpdateClient = async () => {
+        try {
+            if (!clientSelect) return;
+            const clientUpdate = await callEndpointApi(
+                clientLegalServices.updateOne(clientSelect),
+                legalClientsAdapters,
+            );
+
+            const index = clients.findIndex((c) => c.id === clientUpdate.id);
+            clients[index] = clientUpdate;
+            setClients([...clients]);
+            toggleShowDetail();
+            setSnackbar('Cliente Actualizado');
         } catch (e) {
             setSnackbarError(e as ApiError);
         }
@@ -80,26 +117,77 @@ export const useClientsNaturals = () => {
         setOffset(page);
     };
 
-    const handleChangeStatusCodeFilter = (status?: TStatusCodeDOM) => {
-        setStatusCodeFilter(status?.id || '');
-    };
-
     const handleChangeFilters = ({ target }: ChangeEvent<HTMLInputElement>) => {
-        if (target.name === 'firstname') {
+        if (target.name === 'businessname') {
             return setFilters({
                 ...filters,
-                firstName: target.value,
+                businessName: target.value,
             });
         }
-        if (target.name === 'lastname') {
+        if (target.name === 'nit') {
             return setFilters({
                 ...filters,
-                lastName: target.value,
+                nit: target.value,
             });
         }
         if (target.name === 'address') {
             return setFilters({
                 ...filters,
+                address: target.value,
+            });
+        }
+    };
+
+    const handleChangeClientEdit = ({ target }: ChangeEvent<HTMLInputElement>) => {
+        if (!clientSelect) return;
+        if (target.name === 'businessname') {
+            return setClientSelect({
+                ...clientSelect,
+                businessName: target.value,
+            });
+        }
+        if (target.name === 'nit') {
+            return setClientSelect({
+                ...clientSelect,
+                nit: target.value,
+            });
+        }
+        if (target.name === 'number_movil') {
+            return setClientSelect({
+                ...clientSelect,
+                numberMovil: target.value,
+            });
+        }
+        if (target.name === 'address') {
+            return setClientSelect({
+                ...clientSelect,
+                address: target.value,
+            });
+        }
+    };
+
+    const handleChangeClientCreate = ({ target }: ChangeEvent<HTMLInputElement>) => {
+        if (target.name === 'businessname') {
+            return setClientCreate({
+                ...clientCreate,
+                businessName: target.value,
+            });
+        }
+        if (target.name === 'nit') {
+            return setClientCreate({
+                ...clientCreate,
+                nit: target.value,
+            });
+        }
+        if (target.name === 'number_movil') {
+            return setClientCreate({
+                ...clientCreate,
+                numberMovil: target.value,
+            });
+        }
+        if (target.name === 'address') {
+            return setClientCreate({
+                ...clientCreate,
                 address: target.value,
             });
         }
@@ -110,122 +198,13 @@ export const useClientsNaturals = () => {
         getClients();
     };
 
-    const handleSelectClient = (client: TNaturalClientDOM) => {
+    const handleChangeStatusCodeFilter = (status?: TStatusCodeDOM) => {
+        setStatusCodeFilter(status?.id || '');
+    };
+
+    const handleSelectClient = (client: TLegalClientDOM) => {
         setClientSelect(client);
         toggleShowDetail();
-    };
-
-    const handleChangeStatusCodeClient = (status?: TStatusCodeDOM) => {
-        if (!clientSelect) return;
-        setClientSelect({
-            ...clientSelect,
-            status,
-        });
-    };
-
-    const handleChangeClientEdit = ({ target }: ChangeEvent<HTMLInputElement>) => {
-        if (!clientSelect) return;
-        if (target.name === 'firstname') {
-            return setClientSelect({
-                ...clientSelect,
-                firstName: target.value,
-            });
-        }
-        if (target.name === 'lastname') {
-            return setClientSelect({
-                ...clientSelect,
-                lastName: target.value,
-            });
-        }
-        if (target.name === 'number_movil') {
-            return setClientSelect({
-                ...clientSelect,
-                numberMovil: target.value,
-            });
-        }
-        if (target.name === 'address') {
-            return setClientSelect({
-                ...clientSelect,
-                address: target.value,
-            });
-        }
-        if (target.name === 'document') {
-            return setClientSelect({
-                ...clientSelect,
-                documentId: target.value,
-            });
-        }
-    };
-
-    const handleChangeClientCreate = ({ target }: ChangeEvent<HTMLInputElement>) => {
-        if (target.name === 'firstname') {
-            return setClientCreate({
-                ...clientCreate,
-                firstName: target.value,
-            });
-        }
-        if (target.name === 'lastname') {
-            return setClientCreate({
-                ...clientCreate,
-                lastName: target.value,
-            });
-        }
-        if (target.name === 'number_movil') {
-            return setClientCreate({
-                ...clientCreate,
-                numberMovil: target.value,
-            });
-        }
-        if (target.name === 'address') {
-            return setClientCreate({
-                ...clientCreate,
-                address: target.value,
-            });
-        }
-        if (target.name === 'document') {
-            return setClientCreate({
-                ...clientCreate,
-                documentId: target.value,
-            });
-        }
-    };
-
-    const handleCreateClient = async () => {
-        try {
-            const status = statusCode.clients.find(
-                ({ name }) => name === STATUS_CODE.ACTIVE,
-            )!;
-            clientCreate.status = status;
-            const newClient = await callEndpointApi(
-                clientNaturalServices.createOne(clientCreate),
-                naturalClientsAdapters,
-            );
-            if (clients.length >= limit) clients.pop();
-            setClients([newClient, ...clients]);
-            setClientCreate(INITIAL_STATE_CLIENT);
-            toggleShowCreate();
-            setSnackbar('Cliente Creado');
-        } catch (e) {
-            setSnackbarError(e as ApiError);
-        }
-    };
-
-    const handleUpdateClient = async () => {
-        try {
-            if (!clientSelect) return;
-            const clientUpdate = await callEndpointApi(
-                clientNaturalServices.updateOne(clientSelect),
-                naturalClientsAdapters,
-            );
-
-            const index = clients.findIndex((c) => c.id === clientUpdate.id);
-            clients[index] = clientUpdate;
-            setClients([...clients]);
-            setSnackbar('Cliente Actualizado');
-            toggleShowDetail();
-        } catch (e) {
-            setSnackbarError(e as ApiError);
-        }
     };
 
     const toggleShowDetail = () => setShowDetail(!showDetail);
@@ -243,17 +222,16 @@ export const useClientsNaturals = () => {
         clientSelect,
         clientCreate,
         loading,
-        handleChangeLimit,
-        handleChangeOffset,
-        handleChangeStatusCodeFilter,
-        handleChangeFilters,
-        handleSubmit,
-        handleSelectClient,
-        handleChangeStatusCodeClient,
-        handleChangeClientEdit,
-        handleChangeClientCreate,
         handleCreateClient,
         handleUpdateClient,
+        handleChangeLimit,
+        handleChangeOffset,
+        handleChangeFilters,
+        handleChangeClientEdit,
+        handleChangeClientCreate,
+        handleSubmit,
+        handleChangeStatusCodeFilter,
+        handleSelectClient,
         toggleShowDetail,
         toggleShowCreate,
     };

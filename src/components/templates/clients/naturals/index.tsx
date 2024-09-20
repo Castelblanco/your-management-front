@@ -1,9 +1,6 @@
 import {
     Box,
     Card,
-    CardActions,
-    CardContent,
-    CardHeader,
     Table,
     TableBody,
     TableCell,
@@ -17,12 +14,12 @@ import {
 import { LoadingLinear } from '@atoms/loadings/linear';
 import { Input } from '@atoms/input';
 import { DropDownStatusCode } from '@organisms/dropdowns/status_code';
+import { Modal } from '@organisms/modal';
+import { useClientsNaturals } from './hook';
+import { FormClientNatural } from '@templates/forms/clients/natural';
+import { ButtonFloatingAdd } from '@molecules/buttons/floating_add';
 
 import styles from '../styles.module.css';
-import { Modal } from '@organisms/modal';
-import { ButtonSecondary } from '@molecules/buttons/secondary';
-import { validObjects } from '@helpers/valid_objects';
-import { useClientsNaturals } from './hook';
 
 export const ClientsNaturals = () => {
     const {
@@ -32,8 +29,9 @@ export const ClientsNaturals = () => {
         limit,
         statusCodeFilter,
         showDetail,
+        showCreate,
         clientSelect,
-        clientSelectClone,
+        clientCreate,
         loading,
         handleChangeLimit,
         handleChangeOffset,
@@ -42,13 +40,17 @@ export const ClientsNaturals = () => {
         handleSubmit,
         handleSelectClient,
         handleChangeStatusCodeClient,
-        handleChangeClient,
+        handleChangeClientCreate,
+        handleCreateClient,
+        handleChangeClientEdit,
         handleUpdateClient,
         toggleShowDetail,
+        toggleShowCreate,
     } = useClientsNaturals();
 
     return (
         <Box className={styles.container}>
+            <ButtonFloatingAdd onClick={toggleShowCreate} />
             <Card className={styles.box_content}>
                 <Toolbar>
                     <form onSubmit={handleSubmit} className={styles.form}>
@@ -97,12 +99,7 @@ export const ClientsNaturals = () => {
                         {loading && (
                             <TableBody>
                                 <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            padding: 0,
-                                        }}
-                                        colSpan={4}
-                                    >
+                                    <TableCell sx={{ padding: 0 }} colSpan={4}>
                                         <LoadingLinear />
                                     </TableCell>
                                 </TableRow>
@@ -143,71 +140,38 @@ export const ClientsNaturals = () => {
                     onPageChange={handleChangeOffset}
                     onRowsPerPageChange={handleChangeLimit}
                     component={'div'}
+                    labelRowsPerPage="Clientes por pagina"
                 />
             </Card>
             <Modal show={showDetail} onClose={toggleShowDetail}>
-                <Card className={styles.box_content_edit}>
-                    <CardHeader title="Detalle" />
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className={styles.form_update}>
-                            <Input
-                                value={clientSelect?.firstName}
-                                className={styles.input}
-                                label="Nombre"
-                                name="firstname"
-                                onChange={handleChangeClient}
-                            />
-                            <Input
-                                value={clientSelect?.lastName}
-                                className={styles.input}
-                                label="Apellido"
-                                name="lastname"
-                                onChange={handleChangeClient}
-                            />
-                            <Input
-                                value={clientSelect?.numberMovil}
-                                className={styles.input}
-                                label="Telefono"
-                                name="number_movil"
-                                onChange={handleChangeClient}
-                            />
-                            {clientSelect && (
-                                <DropDownStatusCode
-                                    value={clientSelect.status?.id}
-                                    className={styles.input}
-                                    onChange={handleChangeStatusCodeClient}
-                                    type="clients"
-                                />
-                            )}
-                            <Input
-                                value={clientSelect?.address}
-                                className={styles.input}
-                                label="Dirección"
-                                name="address"
-                                onChange={handleChangeClient}
-                            />
-                            <Input
-                                value={clientSelect?.documentId}
-                                className={styles.input}
-                                label="Documento"
-                                name="document"
-                                onChange={handleChangeClient}
-                            />
-                        </form>
-                    </CardContent>
-                    <CardActions>
-                        <ButtonSecondary
-                            onClick={handleUpdateClient}
-                            loading={loading}
-                            disabled={validObjects(clientSelect, clientSelectClone)}
-                        >
-                            Actualizar
-                        </ButtonSecondary>
-                        <ButtonSecondary onClick={toggleShowDetail}>
-                            Cancelar
-                        </ButtonSecondary>
-                    </CardActions>
-                </Card>
+                <FormClientNatural
+                    title="Detalle"
+                    client={clientSelect}
+                    onChangeFirstName={handleChangeClientEdit}
+                    onChangeLastName={handleChangeClientEdit}
+                    onChangeAddress={handleChangeClientEdit}
+                    onChangeDocument={handleChangeClientEdit}
+                    onChangeNumberMovil={handleChangeClientEdit}
+                    onChangeStatus={handleChangeStatusCodeClient}
+                    onUpdate={handleUpdateClient}
+                    onCancel={toggleShowDetail}
+                    loading={loading}
+                />
+            </Modal>
+            <Modal show={showCreate} onClose={toggleShowCreate}>
+                <FormClientNatural
+                    title="Crear Cliente"
+                    client={clientCreate}
+                    onChangeFirstName={handleChangeClientCreate}
+                    onChangeLastName={handleChangeClientCreate}
+                    onChangeAddress={handleChangeClientCreate}
+                    onChangeDocument={handleChangeClientCreate}
+                    onChangeNumberMovil={handleChangeClientCreate}
+                    onCreate={handleCreateClient}
+                    onCancel={toggleShowCreate}
+                    loading={loading}
+                    isCreate
+                />
             </Modal>
         </Box>
     );
