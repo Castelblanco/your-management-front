@@ -32,13 +32,6 @@ export const AppTheme = ({ children }: TAppThemeProps) => {
                             },
                         },
                     },
-                    // MuiPaper: {
-                    //     styleOverrides: {
-                    //         root: {
-                    //             background: isDark ? '#212121' : '#b71c1c',
-                    //         },
-                    //     },
-                    // },
                     MuiTextField: {
                         styleOverrides: {
                             root: {
@@ -54,6 +47,24 @@ export const AppTheme = ({ children }: TAppThemeProps) => {
                                     : '#e0e0e0 !important',
                                 border: 1,
                                 borderStyle: 'solid',
+                            },
+                        },
+                    },
+                    MuiCssBaseline: {
+                        styleOverrides: {
+                            '*::-webkit-scrollbar': {
+                                width: '8px',
+                                height: '8px',
+                            },
+                            '*::-webkit-scrollbar-thumb': {
+                                backgroundColor: isDark ? '#616161' : '#b71c1c', // Primary color
+                                borderRadius: '10px',
+                            },
+                            '*::-webkit-scrollbar-thumb:hover': {
+                                backgroundColor: isDark ? '#424242' : '#d32f2f', // Error color on hover
+                            },
+                            '*::-webkit-scrollbar-track': {
+                                backgroundColor: isDark ? '#303030' : '#f0f0f0', // Track color based on mode
                             },
                         },
                     },
