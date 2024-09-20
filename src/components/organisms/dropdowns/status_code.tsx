@@ -1,6 +1,7 @@
+import { ApiError } from '@common/errors/api_error';
 import { useCallServices } from '@hooks/use_call_services';
 import { statusCodeAdapters } from '@models/status_code/adapters';
-import { TStatusCodeType } from '@models/status_code/entities';
+import { TStatusCodeDOM, TStatusCodeType } from '@models/status_code/entities';
 import {
     FormControl,
     FormControlProps,
@@ -11,18 +12,20 @@ import {
     Typography,
 } from '@mui/material';
 import { statusCodeServices } from '@services/status_code';
+import { useSnackbar } from '@storages/zustand/snackbar';
 import { useStatusCode } from '@storages/zustand/status_code';
 import { useEffect } from 'react';
 
 export type TDropDownStatusCodeProps = Omit<FormControlProps, 'onChange'> & {
     type: TStatusCodeType;
-    onChange?: (e: SelectChangeEvent) => void;
+    onChange?: (status?: TStatusCodeDOM) => void;
     value?: string;
     showvoid?: boolean;
 };
 
 export const DropDownStatusCode = (props: TDropDownStatusCodeProps) => {
     const { statusCode, setStatusCode } = useStatusCode();
+    const { setSnackbarError } = useSnackbar();
 
     const { loading, callEndpointList } = useCallServices();
 
@@ -37,16 +40,23 @@ export const DropDownStatusCode = (props: TDropDownStatusCodeProps) => {
 
                 setStatusCode(props.type, items);
             } catch (e) {
-                console.log({ e });
+                setSnackbarError(e as ApiError);
             }
         })();
     }, []);
+
+    const handleChange = ({ target }: SelectChangeEvent) => {
+        if (!props.onChange) return;
+        if (!target.value) return props.onChange();
+        const status = statusCode[props.type].find((v) => v.id === target.value);
+        props.onChange(status);
+    };
 
     return (
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         <FormControl disabled={loading} {...(props as any)}>
             <InputLabel>Estado</InputLabel>
-            <Select value={props.value} onChange={props.onChange} label="Estado">
+            <Select value={props.value} onChange={handleChange} label="Estado">
                 {props.showvoid && (
                     <MenuItem value={''}>
                         <Typography

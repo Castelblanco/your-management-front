@@ -1,3 +1,6 @@
+import { ApiError } from '@common/errors/api_error';
+import { useCallServices } from '@hooks/use_call_services';
+import { statusCodeAdapters } from '@models/status_code/adapters';
 import {
     FormControl,
     FormControlProps,
@@ -9,6 +12,7 @@ import {
 } from '@mui/material';
 import { guideServices } from '@services/guides_service';
 import { useNovelties } from '@storages/zustand/novelties';
+import { useSnackbar } from '@storages/zustand/snackbar';
 import { useEffect } from 'react';
 
 export type TDropDownNoveltiesProps = Omit<FormControlProps, 'onChange'> & {
@@ -19,28 +23,29 @@ export type TDropDownNoveltiesProps = Omit<FormControlProps, 'onChange'> & {
 
 export const DropDownNovelties = (props: TDropDownNoveltiesProps) => {
     const { novelties, setNovelties } = useNovelties();
+    const { setSnackbarError } = useSnackbar();
+
+    const { loading, callEndpointList } = useCallServices();
 
     useEffect(() => {
         (async () => {
             try {
                 if (novelties.length !== 0) return;
-                const { data } = await guideServices.getNolveties().response;
-
-                setNovelties(
-                    data.items.map((type) => ({
-                        id: type._id,
-                        name: type.name,
-                    })),
+                const { items } = await callEndpointList(
+                    guideServices.getNolveties(),
+                    statusCodeAdapters,
                 );
+
+                setNovelties([...items]);
             } catch (e) {
-                console.log({ e });
+                setSnackbarError(e as ApiError);
             }
         })();
     }, []);
 
     return (
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        <FormControl {...(props as any)}>
+        <FormControl disabled={loading} {...(props as any)}>
             <InputLabel>Novedad</InputLabel>
             <Select value={props.value} onChange={props.onChange} label="Novedad">
                 {props.showvoid && (

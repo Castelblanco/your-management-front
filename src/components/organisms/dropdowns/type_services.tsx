@@ -1,3 +1,6 @@
+import { ApiError } from '@common/errors/api_error';
+import { useCallServices } from '@hooks/use_call_services';
+import { guideServiceTypeAdapter } from '@models/guides_service/adapters';
 import {
     FormControl,
     FormControlProps,
@@ -8,6 +11,7 @@ import {
     Typography,
 } from '@mui/material';
 import { guideServices } from '@services/guides_service';
+import { useSnackbar } from '@storages/zustand/snackbar';
 import { useTypeServices } from '@storages/zustand/type_services';
 import { useEffect } from 'react';
 
@@ -19,29 +23,29 @@ export type TDropDownTypeServicesPorps = Omit<FormControlProps, 'onChange'> & {
 
 export const DropDownTypeServices = (props: TDropDownTypeServicesPorps) => {
     const { typeServices, setTypeServices } = useTypeServices();
+    const { setSnackbarError } = useSnackbar();
+
+    const { loading, callEndpointList } = useCallServices();
 
     useEffect(() => {
         (async () => {
             try {
                 if (typeServices.length !== 0) return;
-                const { data } = await guideServices.getServicesType().response;
-
-                setTypeServices(
-                    data.items.map((type) => ({
-                        id: type._id,
-                        name: type.name,
-                        tab: type.tab,
-                    })),
+                const { items } = await callEndpointList(
+                    guideServices.getServicesType(),
+                    guideServiceTypeAdapter,
                 );
+
+                setTypeServices([...items]);
             } catch (e) {
-                console.log({ e });
+                setSnackbarError(e as ApiError);
             }
         })();
     }, []);
 
     return (
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        <FormControl {...(props as any)}>
+        <FormControl disabled={loading} {...(props as any)}>
             <InputLabel>Tipo de Servicio</InputLabel>
             <Select
                 value={props.value}
