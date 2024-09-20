@@ -37,9 +37,13 @@ import { DateTime } from 'luxon';
 import { ButtonFloatingAdd } from '@molecules/buttons/floating_add';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@constants/routes';
+import { TStatusCodeDOM } from '@models/status_code/entities';
+import { useSnackbar } from '@storages/zustand/snackbar';
+import { ApiError } from '@common/errors/api_error';
 
 export default function MainGuidesService() {
     const { profile } = useProfile();
+    const { setSnackbarError } = useSnackbar();
 
     const [guides, setGuides] = useState<TGuideServiceDOM[]>([]);
     const [filters, setFilters] = useState<TGuideServiceFilterDOM>({
@@ -90,7 +94,7 @@ export default function MainGuidesService() {
             setGuides([...items]);
             if (totals !== total) setTotal(totals);
         } catch (e) {
-            console.log({ e });
+            setSnackbarError(e as ApiError);
         }
     };
 
@@ -98,10 +102,10 @@ export default function MainGuidesService() {
         navigate(`${ROUTES.GUIDES_SERVICE}/${guide.id}`);
     };
 
-    const handleChangeStatusFilter = ({ target }: SelectChangeEvent) => {
+    const handleChangeStatusFilter = (status?: TStatusCodeDOM) => {
         setFilters({
             ...filters,
-            statusId: target.value,
+            statusId: status?.id,
         });
     };
 

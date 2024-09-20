@@ -20,7 +20,6 @@ import { STATUS_CODE } from '@constants/status_code';
 import { useNavigate } from 'react-router-dom';
 import { guideServices } from '@services/guides_service';
 import { guidesServiceAdapters } from '@models/guides_service/adapters';
-import { formatTextError } from '@errors/map_errors';
 import { ApiError } from '@common/errors/api_error';
 import { ROUTES } from '@constants/routes';
 import { FormGuidesService } from '@templates/forms/guides_service';
@@ -47,7 +46,7 @@ const INITIAL_CLIENT_LEGAL: TLegalClientDOM = {
 
 export default function MainGuidesServiceCreate() {
     const { profile } = useProfile();
-    const { setSnackbar } = useSnackbar();
+    const { setSnackbar, setSnackbarError } = useSnackbar();
     const { novelties } = useNovelties();
     const { statusCode } = useStatusCode();
 
@@ -226,7 +225,7 @@ export default function MainGuidesServiceCreate() {
 
             await getRoutePointsSales();
         } catch (e) {
-            console.log({ e });
+            setSnackbarError(e as ApiError);
         }
     };
 
@@ -302,8 +301,7 @@ export default function MainGuidesServiceCreate() {
             );
             navigate(`${ROUTES.GUIDES_SERVICE}/${newGuide.id}`);
         } catch (e) {
-            console.log({ e });
-            setSnackbar(formatTextError(e as ApiError));
+            setSnackbarError(e as ApiError);
         }
     };
 

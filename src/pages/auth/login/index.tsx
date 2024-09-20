@@ -9,14 +9,13 @@ import { userServices } from '@services/users';
 import { usersLoginAdapters } from '@models/users/adapters';
 import { useProfile } from '@storages/zustand/profile';
 import { useSnackbar } from '@storages/zustand/snackbar';
-import { formatTextError } from 'errors/map_errors';
 import { ApiError } from '@common/errors/api_error';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@constants/routes';
 
 export default function AuthLogin() {
     const { setProfile } = useProfile();
-    const { setSnackbar } = useSnackbar();
+    const { setSnackbarError } = useSnackbar();
 
     const navigate = useNavigate();
 
@@ -46,8 +45,7 @@ export default function AuthLogin() {
             setProfile(login);
             navigate(ROUTES.GUIDES_SERVICE);
         } catch (e) {
-            setSnackbar(formatTextError(e as ApiError));
-            console.log({ e });
+            setSnackbarError(e as ApiError);
         }
     };
 

@@ -15,13 +15,13 @@ import { createId } from '@tools/create_id';
 import { services } from '@tomtom-international/web-sdk-services';
 import { TOMTOM_API_KEY } from '@constants/app';
 import { useSnackbar } from '@storages/zustand/snackbar';
-import { formatTextError } from '@errors/map_errors';
 import { ApiError } from '@common/errors/api_error';
 import { useProfile } from '@storages/zustand/profile';
+import { TStatusCodeDOM } from '@models/status_code/entities';
 
 export default function MainGuidesServiceDetail() {
     const params = useParams<{ id: string }>();
-    const { setSnackbar } = useSnackbar();
+    const { setSnackbar, setSnackbarError } = useSnackbar();
     const { profile } = useProfile();
 
     const [guide, setGuide] = useState<TGuideServiceDOM>();
@@ -53,7 +53,7 @@ export default function MainGuidesServiceDetail() {
                 setGuide(guide);
                 setGuideClone(guide);
             } catch (e) {
-                console.log({ e });
+                setSnackbarError(e as ApiError);
             }
         })();
     }, []);
@@ -72,13 +72,10 @@ export default function MainGuidesServiceDetail() {
         });
     };
 
-    const handleChangeStatus = ({ target }: SelectChangeEvent) => {
+    const handleChangeStatus = (status?: TStatusCodeDOM) => {
         setGuide({
             ...guide!,
-            status: {
-                name: '',
-                id: target.value,
-            },
+            status,
         });
     };
 
@@ -139,7 +136,7 @@ export default function MainGuidesServiceDetail() {
             setGuideClone(guide);
             setSnackbar('Guia Actualizada');
         } catch (e) {
-            setSnackbar(formatTextError(e as ApiError));
+            setSnackbarError(e as ApiError);
         }
     };
 

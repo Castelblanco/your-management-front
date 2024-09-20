@@ -36,6 +36,9 @@ import { pointsSaleAdapters } from '@models/points_sale/adapters';
 import { CardPointSaleDetail } from '@organisms/cards/point_sale_detail';
 import { CardClientNaturalDetail } from '@organisms/cards/client_natural_detail';
 import { CardClientLegalDetail } from '@organisms/cards/client_legal_detail';
+import { TStatusCodeDOM } from '@models/status_code/entities';
+import { useSnackbar } from '@storages/zustand/snackbar';
+import { ApiError } from '@common/errors/api_error';
 
 import styles from './styles.module.css';
 
@@ -44,7 +47,7 @@ export type TFormGuidesServiceProps = {
     mapElement: Ref<HTMLDivElement>;
     isCreate: boolean;
     onChangeNovelty?: (e: SelectChangeEvent) => void;
-    onChangeStatus?: (e: SelectChangeEvent) => void;
+    onChangeStatus?: (status?: TStatusCodeDOM) => void;
     onChangeTypeService?: (e: SelectChangeEvent) => void;
     onClientOriginType?: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
     onSelectNaturalClientOrigin?: (value: TNaturalClientDOM) => void;
@@ -88,6 +91,7 @@ export const FormGuidesService = ({
     onSelectPointSaleOrigin,
     onSelectPointSaleDestination,
 }: TFormGuidesServiceProps) => {
+    const { setSnackbarError } = useSnackbar();
     const [naturalClients, setNaturalClients] = useState<TNaturalClientDOM[]>([]);
     const [legalClients, setLegalClients] = useState<TLegalClientDOM[]>([]);
     const [pointsSale, setPointsSale] = useState<TPointSaleDOM[]>([]);
@@ -111,7 +115,7 @@ export const FormGuidesService = ({
             );
             setNaturalClients([...items]);
         } catch (e) {
-            console.log({ e });
+            setSnackbarError(e as ApiError);
         }
     };
 
@@ -129,7 +133,7 @@ export const FormGuidesService = ({
             );
             setLegalClients([...items]);
         } catch (e) {
-            console.log({ e });
+            setSnackbarError(e as ApiError);
         }
     };
 
@@ -147,7 +151,7 @@ export const FormGuidesService = ({
             );
             setPointsSale([...items]);
         } catch (e) {
-            console.log({ e });
+            setSnackbarError(e as ApiError);
         }
     };
 
