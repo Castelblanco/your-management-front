@@ -1,15 +1,15 @@
 {
     "name": "your-management-front-v2",
     "private": true,
-    "version": "2.0.0",
+    "version": "2.0.1",
     "type": "module",
     "scripts": {
         "dev": "bunx --bun vite --host",
-        "build": "bun run style && bun run lint && tsc -b && vite build",
+        "build": "tsc -b && vite build",
         "lint": "eslint .",
         "style": "prettier --check ./src",
         "preview": "vite preview",
-        "deploy": "bun run build && bunx firebase deploy"
+        "deploy": "bun run style && bun run lint && bunx firebase deploy"
     },
     "dependencies": {
         "@emotion/react": "11.13.3",
