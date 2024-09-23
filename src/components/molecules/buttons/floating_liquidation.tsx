@@ -13,7 +13,7 @@ export const ButtonFloatingLiquidation = (props: TButtonFloatingLiquidationProps
                 position: 'fixed',
                 bottom: 90,
                 right: 30,
-                zIndex: 1000000000000000,
+                zIndex: 1000,
             }}
             {...props}
         >

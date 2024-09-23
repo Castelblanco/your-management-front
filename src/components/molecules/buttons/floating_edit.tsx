@@ -13,7 +13,7 @@ export const ButtonFloatingEdit = (props: TButtonFloatingEditProps) => {
                 position: 'fixed',
                 bottom: 30,
                 right: 30,
-                zIndex: 1000000000000000,
+                zIndex: 1000,
             }}
             {...props}
         >
