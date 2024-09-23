@@ -13,8 +13,6 @@ import {
     Stack,
 } from '@mui/material';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
-
-import styles from './styles.module.css';
 import { validObjects } from '@helpers/valid_objects';
 import { Input } from '@atoms/input';
 import { DropDownStatusCode } from '@organisms/dropdowns/status_code';
@@ -27,6 +25,8 @@ import { useMap } from '@templates/map/hook';
 import { Map } from '@templates/map';
 import { useSnackbar } from '@storages/zustand/snackbar';
 import { ApiError } from '@common/errors/api_error';
+
+import styles from './styles.module.css';
 
 export type TFormUserProps = {
     title?: string;
@@ -159,42 +159,36 @@ export const FormUser = ({
                     </Stack>
                     <form className={styles.form}>
                         <Input
-                            className={styles.input}
                             name="firstname"
                             label="Nombre"
                             onChange={onChangeFirstName}
                             value={user?.firstName}
                         />
                         <Input
-                            className={styles.input}
                             name="lastname"
                             label="Apellido"
                             onChange={onChangeLastName}
                             value={user?.lastName}
                         />
                         <Input
-                            className={styles.input}
                             name="email"
                             label="Correo"
                             onChange={onChangeEmail}
                             value={user?.email}
                         />
                         <Input
-                            className={styles.input}
                             name="document"
                             label="Documento"
                             onChange={onChangeDocument}
                             value={user?.documentId}
                         />
                         <Input
-                            className={styles.input}
                             name="number_movil"
                             label="Telefono"
                             onChange={onChangePhone}
                             value={user?.phone}
                         />
                         <Input
-                            className={styles.input}
                             name="address"
                             label="Dirección"
                             onChange={onChangeAddress}
@@ -203,14 +197,12 @@ export const FormUser = ({
                         {isCreate && (
                             <>
                                 <Input
-                                    className={styles.input}
                                     name="password"
                                     label="Contraseña"
                                     onChange={onChangePassword}
                                     value={user?.password}
                                 />
                                 <Input
-                                    className={styles.input}
                                     name="confirm_password"
                                     label="Confirmar Contraseña"
                                     onChange={onChangeConfirmPassword}

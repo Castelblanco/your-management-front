@@ -3,12 +3,13 @@ import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 
 export type TCardPointSaleDetailProps = {
     pointSale: TPointSaleDOM;
+    title?: string;
 };
 
-export const CardPointSaleDetail = ({ pointSale }: TCardPointSaleDetailProps) => {
+export const CardPointSaleDetail = ({ pointSale, title }: TCardPointSaleDetailProps) => {
     return (
         <Card elevation={8}>
-            <CardHeader title={pointSale.name} />
+            <CardHeader title={title || pointSale.name} />
             <CardContent>
                 <Typography>Departamento: {pointSale.department}</Typography>
                 <Typography>Municipio: {pointSale.municipality}</Typography>

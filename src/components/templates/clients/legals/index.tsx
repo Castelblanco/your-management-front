@@ -21,7 +21,7 @@ import { useClientsLegals } from './hook';
 
 import styles from '../styles.module.css';
 
-export const ClientsLegals = () => {
+export default function ClientsLegals() {
     const {
         clients,
         total,
@@ -168,4 +168,4 @@ export const ClientsLegals = () => {
             </Modal>
         </Box>
     );
-};
+}

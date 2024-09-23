@@ -21,7 +21,7 @@ import { ButtonFloatingAdd } from '@molecules/buttons/floating_add';
 
 import styles from '../styles.module.css';
 
-export const ClientsNaturals = () => {
+export default function ClientsNaturals() {
     const {
         clients,
         total,
@@ -175,4 +175,4 @@ export const ClientsNaturals = () => {
             </Modal>
         </Box>
     );
-};
+}

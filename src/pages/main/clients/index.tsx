@@ -1,8 +1,9 @@
 import { Box, Tab } from '@mui/material';
 import { TabPanel, TabContext, TabList } from '@mui/lab';
-import { ElementType, SyntheticEvent, useState } from 'react';
-import { ClientsNaturals } from '@templates/clients/naturals';
-import { ClientsLegals } from '@templates/clients/legals';
+import { ElementType, lazy, SyntheticEvent, useState } from 'react';
+
+const ClientsNaturals = lazy(() => import('@templates/clients/naturals'));
+const ClientsLegals = lazy(() => import('@templates/clients/legals'));
 
 export default function MainClients() {
     const [view, setView] = useState('0');
