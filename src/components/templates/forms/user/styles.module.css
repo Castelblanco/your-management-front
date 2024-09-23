@@ -1,0 +1,19 @@
+.container {
+    width: 90%;
+    max-width: 1230px;
+    padding: 16px;
+    overflow: auto;
+}
+
+.box_form {
+    width: 50%;
+}
+
+.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}

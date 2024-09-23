@@ -11,6 +11,7 @@ const AuthLogin = lazy(() => import('./auth/login'));
 const MainRoutes = lazy(() => import('./main'));
 const MainGuidesService = lazy(() => import('./main/guides_service'));
 const MainClients = lazy(() => import('./main/clients'));
+const MainUsers = lazy(() => import('./main/users'));
 
 export default function AppRoutes() {
     const { profile } = useProfile();
@@ -41,6 +42,7 @@ export default function AppRoutes() {
                         path={`${ROUTES.GUIDES_SERVICE}/:id`}
                         element={<MainGuidesServiceDetail />}
                     />
+                    <Route path={ROUTES.USERS} element={<MainUsers />} />
                     <Route path={ROUTES.CLIENTS} element={<MainClients />} />
                 </Route>
             </Routes>

@@ -1,6 +1,6 @@
 import { ROUTES } from '@constants/routes';
 import { Logo } from '@molecules/imgs/logo';
-import { Box, Card, Drawer, List, ListItemButton, ListItemText } from '@mui/material';
+import { Box, Drawer, List, ListItemButton, ListItemText } from '@mui/material';
 import { useAppTheme } from '@storages/zustand/app_theme';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
@@ -65,6 +65,7 @@ export const Menu = () => {
 
         navigator(navs[index].href);
         setNavigators([...navs]);
+        toggleShowMenu();
     };
 
     const toggleShowMenu = () => toggleShow();
@@ -74,35 +75,34 @@ export const Menu = () => {
             open={show}
             PaperProps={{
                 elevation: 5,
+                className: styles.container,
             }}
             onClose={toggleShowMenu}
         >
-            <Card className={styles.container}>
-                <Box className={styles.box_header}>
-                    <IconButton
-                        sx={{
-                            marginRight: 2,
-                        }}
-                        color="inherit"
-                        onClick={toggleShowMenu}
+            <Box className={styles.box_header}>
+                <IconButton
+                    sx={{
+                        marginRight: 2,
+                    }}
+                    color="inherit"
+                    onClick={toggleShowMenu}
+                >
+                    <IconMenu />
+                </IconButton>
+                <Logo mode={mode} />
+            </Box>
+            <List>
+                {navigators.map((nav, i) => (
+                    <ListItemButton
+                        className={styles.btn_nav}
+                        selected={nav.activated}
+                        onClick={() => handleSelectNav(i)}
+                        key={i}
                     >
-                        <IconMenu />
-                    </IconButton>
-                    <Logo mode={mode} />
-                </Box>
-                <List>
-                    {navigators.map((nav, i) => (
-                        <ListItemButton
-                            className={styles.btn_nav}
-                            selected={nav.activated}
-                            onClick={() => handleSelectNav(i)}
-                            key={i}
-                        >
-                            <ListItemText primary={nav.label} />
-                        </ListItemButton>
-                    ))}
-                </List>
-            </Card>
+                        <ListItemText primary={nav.label} />
+                    </ListItemButton>
+                ))}
+            </List>
         </Drawer>
     );
 };

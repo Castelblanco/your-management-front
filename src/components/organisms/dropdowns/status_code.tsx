@@ -48,8 +48,7 @@ export const DropDownStatusCode = (props: TDropDownStatusCodeProps) => {
     const handleChange = ({ target }: SelectChangeEvent) => {
         if (!props.onChange) return;
         if (!target.value) return props.onChange();
-        const status = statusCode[props.type].find((v) => v.id === target.value);
-        props.onChange(status);
+        props.onChange(statusCode[props.type].find((v) => v.id === target.value));
     };
 
     return (
