@@ -8,7 +8,7 @@ export const buildUpdateOnePicture = ({
     http,
     dataURItoBlob,
 }: Dependencies) => {
-    const service = async (id: string, picture: TUserPictureDOM) => {
+    const service = (id: string, picture: TUserPictureDOM) => {
         const controller = abortController();
         const pictureApi = new UserPictureAPI({
             _id: picture.id,

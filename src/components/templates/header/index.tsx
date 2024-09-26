@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 import styles from './styles.module.css';
 import { IconButton } from '@atoms/icon_button';
 import { IconMenu } from '@atoms/icons/menu';
@@ -7,6 +7,7 @@ import { ChangeAppTheme } from '@organisms/change_app_theme';
 import { Logo } from '@molecules/imgs/logo';
 import { useMenu } from '@storages/zustand/menu';
 import { useAppTheme } from '@storages/zustand/app_theme';
+import { Profile } from '@organisms/profile/index';
 
 export const Header = () => {
     const { mode } = useAppTheme();
@@ -42,9 +43,15 @@ export const Header = () => {
                     v{APP_VERSION}
                 </Typography>
             </Box>
-            <Box>
+            <Stack
+                flexDirection={'row'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+                width={'100px'}
+            >
                 <ChangeAppTheme />
-            </Box>
+                <Profile />
+            </Stack>
         </Paper>
     );
 };
