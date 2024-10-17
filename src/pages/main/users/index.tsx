@@ -59,7 +59,7 @@ export default function MainUsers() {
 
     return (
         <Box className={styles.container}>
-            <ButtonFloatingAdd onClick={toggleShowCreate} />
+            <ButtonFloatingAdd tooltip="Crear Usuario" onClick={toggleShowCreate} />
             <Card className={styles.box_content}>
                 <Toolbar>
                     <form onSubmit={handleSubmit} className={styles.form}>

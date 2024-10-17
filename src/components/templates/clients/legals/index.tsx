@@ -49,7 +49,7 @@ export default function ClientsLegals() {
 
     return (
         <Box className={styles.container}>
-            <ButtonFloatingAdd onClick={toggleShowCreate} />
+            <ButtonFloatingAdd tooltip="Crear Cliente" onClick={toggleShowCreate} />
             <Card className={styles.box_content}>
                 <Toolbar>
                     <form onSubmit={handleSubmit} className={styles.form}>

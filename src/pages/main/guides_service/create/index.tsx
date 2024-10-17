@@ -310,7 +310,7 @@ export default function MainGuidesServiceCreate() {
     return (
         <Box margin={'10px auto'} maxWidth={'1100px'} width={'95%'}>
             <Box marginY={'10px'}>
-                <ButtonBack loading={loading} onClick={handleBack} />
+                <ButtonBack tooltip="Salir" loading={loading} onClick={handleBack} />
             </Box>
             <FormGuidesService
                 isCreate
@@ -332,9 +332,17 @@ export default function MainGuidesServiceCreate() {
                 onSelectPointSaleDestination={handleSelectPointSaleDestination}
             />
 
-            <ButtonFloatingLiquidation loading={loading} onClick={handleLiquidate} />
+            <ButtonFloatingLiquidation
+                tooltip="Liquidar"
+                loading={loading}
+                onClick={handleLiquidate}
+            />
             {enableCreate && (
-                <ButtonFloatingAdd loading={loading} onClick={handleCreateGuide} />
+                <ButtonFloatingAdd
+                    tooltip="Crear Guia"
+                    loading={loading}
+                    onClick={handleCreateGuide}
+                />
             )}
         </Box>
     );

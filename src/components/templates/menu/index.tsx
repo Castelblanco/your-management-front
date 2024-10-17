@@ -4,10 +4,9 @@ import { Box, Drawer, List, ListItemButton, ListItemText } from '@mui/material';
 import { useAppTheme } from '@storages/zustand/app_theme';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
-import { IconButton } from '@atoms/icon_button';
-import { IconMenu } from '@atoms/icons/menu';
 import { useMenu } from '@storages/zustand/menu';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ButtonMenu } from '@molecules/buttons/menu';
 
 type TNavigator = {
     label: string;
@@ -16,6 +15,11 @@ type TNavigator = {
 };
 
 const NAVIGATORS: TNavigator[] = [
+    {
+        href: ROUTES.REPORTS,
+        activated: false,
+        label: 'Reportes',
+    },
     {
         href: ROUTES.GUIDES_SERVICE,
         activated: false,
@@ -80,15 +84,13 @@ export const Menu = () => {
             onClose={toggleShowMenu}
         >
             <Box className={styles.box_header}>
-                <IconButton
+                <ButtonMenu
                     sx={{
                         marginRight: 2,
                     }}
-                    color="inherit"
                     onClick={toggleShowMenu}
-                >
-                    <IconMenu />
-                </IconButton>
+                    tooltip="Menu"
+                />
                 <Logo mode={mode} />
             </Box>
             <List>

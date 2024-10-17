@@ -1,13 +1,13 @@
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import styles from './styles.module.css';
-import { IconButton } from '@atoms/icon_button';
-import { IconMenu } from '@atoms/icons/menu';
 import { APP_VERSION } from '@constants/app';
 import { ChangeAppTheme } from '@organisms/change_app_theme';
 import { Logo } from '@molecules/imgs/logo';
 import { useMenu } from '@storages/zustand/menu';
 import { useAppTheme } from '@storages/zustand/app_theme';
 import { Profile } from '@organisms/profile/index';
+import { ButtonHelp } from '@molecules/buttons/help';
+import { ButtonMenu } from '@molecules/buttons/menu';
 
 export const Header = () => {
     const { mode } = useAppTheme();
@@ -25,15 +25,13 @@ export const Header = () => {
             color="Highlight"
         >
             <Box className={styles.box_menu_app_version}>
-                <IconButton
+                <ButtonMenu
+                    onClick={toggleShowMenu}
                     sx={{
                         marginRight: 2,
                     }}
-                    color="inherit"
-                    onClick={toggleShowMenu}
-                >
-                    <IconMenu />
-                </IconButton>
+                    tooltip="Menu"
+                />
                 <Logo />
                 <Typography
                     sx={{
@@ -47,8 +45,9 @@ export const Header = () => {
                 flexDirection={'row'}
                 alignItems={'center'}
                 justifyContent={'space-between'}
-                width={'100px'}
+                width={'150px'}
             >
+                <ButtonHelp tooltip="Ayuda" />
                 <ChangeAppTheme />
                 <Profile />
             </Stack>

@@ -143,7 +143,7 @@ export default function MainGuidesServiceDetail() {
     return (
         <Box margin={'10px auto'} maxWidth={'1100px'} width={'95%'}>
             <Box marginY={'10px'}>
-                <ButtonBack loading={loading} onClick={handleBack} />
+                <ButtonBack tooltip="Salir" loading={loading} onClick={handleBack} />
             </Box>
             {!guide && <div ref={setMapControl} hidden />}
             {guide && (
@@ -157,7 +157,11 @@ export default function MainGuidesServiceDetail() {
             )}
 
             {!validObjects(guide, guideClone) && (
-                <ButtonFloatingEdit loading={loading} onClick={handleUpdateGuide} />
+                <ButtonFloatingEdit
+                    tooltip="Editar Guia"
+                    loading={loading}
+                    onClick={handleUpdateGuide}
+                />
             )}
         </Box>
     );

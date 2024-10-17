@@ -12,6 +12,7 @@ export const MAP_ERRORS: Record<string, string> = {
     price: 'Precio',
     'Required property': 'son requerido',
     'Expected number to be greater or equal to 1': 'no puede ser 0',
+    'There are no guides to export': 'No hay Guias para exportar',
 };
 
 export const formatTextError = (err: ApiError): string => {

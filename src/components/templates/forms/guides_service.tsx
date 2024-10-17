@@ -544,11 +544,13 @@ export const FormGuidesService = ({
                                         <>
                                             {i === 0 ? (
                                                 <ButtonAdd
+                                                    tooltip="Añadir Mercancia"
                                                     disabled={!isCreate}
                                                     onClick={onAddCommodity}
                                                 />
                                             ) : (
                                                 <ButtonDelete
+                                                    tooltip="Remover Mercancia"
                                                     onClick={() =>
                                                         handleRemoveCommodity(i)
                                                     }

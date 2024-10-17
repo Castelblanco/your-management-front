@@ -58,6 +58,7 @@ export type TGuideServiceFilterDOM = {
     collection?: boolean;
     service?: boolean;
     user?: boolean;
+    pointSaleId?: string;
     pointSaleOrigin?: boolean;
     pointSaleDestination?: boolean;
     clientOrigin?: boolean;

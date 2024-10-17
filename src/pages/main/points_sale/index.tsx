@@ -207,7 +207,10 @@ export default function MainPointsSales() {
 
     return (
         <Box className={styles.container}>
-            <ButtonFloatingAdd onClick={toggleShowCreate} />
+            <ButtonFloatingAdd
+                tooltip="Crear Punto de Venta"
+                onClick={toggleShowCreate}
+            />
             <Card className={styles.box_content}>
                 <Toolbar>
                     <form onSubmit={handleSubmit} className={styles.form}>

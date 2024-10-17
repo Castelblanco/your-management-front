@@ -142,11 +142,11 @@ export default function MainGuidesService() {
 
     return (
         <>
-            <ButtonFloatingAdd onClick={handleCreateGuide} />
+            <ButtonFloatingAdd tooltip="Crear Guia" onClick={handleCreateGuide} />
             <Box className={styles.container}>
                 <Card className={styles.box_content}>
                     <Toolbar>
-                        <form /* onSubmit={handleSubmit} */ className={styles.form}>
+                        <form className={styles.form}>
                             <DatePickerRange
                                 value={dateFilter}
                                 onChange={handleChangeDateFilter}

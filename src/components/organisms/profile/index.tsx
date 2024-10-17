@@ -130,6 +130,7 @@ export const Profile = () => {
                         )}
                         <Box position={'absolute'} bottom={5} right={40}>
                             <ButtonEdit
+                                tooltip="Editar Foto de Perfil"
                                 className={styles.btn_edit}
                                 onClick={handleClickEdit}
                             />
@@ -183,12 +184,13 @@ export const Profile = () => {
                         </CardContent>
                         <CardActions>
                             <ButtonSecondary
+                                tooltip=""
                                 loading={loading}
                                 onClick={handleChangeProfilePicture}
                             >
                                 Guardar
                             </ButtonSecondary>
-                            <ButtonSecondary onClick={handleCancelEdit}>
+                            <ButtonSecondary tooltip="" onClick={handleCancelEdit}>
                                 Cancelar
                             </ButtonSecondary>
                         </CardActions>
