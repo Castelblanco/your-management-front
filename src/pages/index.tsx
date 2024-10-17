@@ -9,6 +9,7 @@ import MainGuidesServiceDetail from './main/guides_service/detail';
 const AuthRoutes = lazy(() => import('./auth'));
 const AuthLogin = lazy(() => import('./auth/login'));
 const MainRoutes = lazy(() => import('./main'));
+const MainReports = lazy(() => import('./main/reports'));
 const MainGuidesService = lazy(() => import('./main/guides_service'));
 const MainClients = lazy(() => import('./main/clients'));
 const MainUsers = lazy(() => import('./main/users'));
@@ -34,6 +35,7 @@ export default function AppRoutes() {
                     <Route path="login" element={<AuthLogin />} />
                 </Route>
                 <Route path="/" element={<MainRoutes />}>
+                    <Route path={ROUTES.REPORTS} element={<MainReports />} />
                     <Route path={ROUTES.GUIDES_SERVICE} element={<MainGuidesService />} />
                     <Route
                         path={ROUTES.GUIDES_SERVICE_CREATE}

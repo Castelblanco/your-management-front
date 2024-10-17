@@ -1,0 +1,9 @@
+.container {
+    width: 80%;
+    max-width: 830px;
+    margin: 40px auto;
+}
+
+.box_content {
+    padding: 16px;
+}
