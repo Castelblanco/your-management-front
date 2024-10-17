@@ -16,6 +16,7 @@ import { guidesServiceAdapters } from '@models/guides_service/adapters';
 import { buildGetNovelties } from './get_novelties';
 import { buildGetServicesType } from './get_services_type';
 import { httpMonolith } from '@storages/axios/instances';
+import { buildReportRouter } from './report_router';
 
 export type Dependencies = {
     qs: (filter: TGuideServiceFilterDOM) => string;
@@ -39,6 +40,7 @@ export const createOne = buildCreateOne(dependencies);
 export const updateOne = buildUpdateOne(dependencies);
 export const getServicesType = buildGetServicesType(dependencies);
 export const getNolveties = buildGetNovelties(dependencies);
+export const reportRouter = buildReportRouter(dependencies);
 
 export const guideServices = {
     getAll,
@@ -47,4 +49,5 @@ export const guideServices = {
     updateOne,
     getServicesType,
     getNolveties,
+    reportRouter,
 };

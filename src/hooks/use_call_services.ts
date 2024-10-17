@@ -2,6 +2,8 @@ import { type TAdapters } from '@common/base/adapters';
 import { ApiError } from '@common/errors/api_error';
 import { ApiResponses } from '@common/responses/api_response';
 import { ListResponse } from '@common/responses/list_response';
+import { getFilenameInDisposition } from '@helpers/get_filename_in_disposition';
+import { downloadFile } from '@tools/dowload_file';
 import { type AxiosResponse } from 'axios';
 import { useState } from 'react';
 
@@ -53,6 +55,21 @@ export const useCallServices = () => {
         }
     };
 
+    const callEndpointDowloadFile = async (call: TServiceResponse<Blob>) => {
+        setLoading(true);
+        const index = controllers.push(call.controller);
+        try {
+            const { data, headers } = await call.response;
+            downloadFile(data, getFilenameInDisposition(headers['content-disposition']));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            throw new ApiError(err?.response?.data);
+        } finally {
+            controllers.splice(index, 1);
+            setLoading(false);
+        }
+    };
+
     const callEndpoint = async <D>(call: TServiceResponse<ApiResponses<D>>) => {
         setLoading(true);
         const index = controllers.push(call.controller);
@@ -76,6 +93,7 @@ export const useCallServices = () => {
         loading,
         callEndpointList,
         callEndpointApi,
+        callEndpointDowloadFile,
         callEndpoint,
         cancelEndpoint,
     };
