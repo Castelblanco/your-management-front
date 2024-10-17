@@ -1,7 +1,7 @@
 {
     "name": "your-management-front-v2",
     "private": true,
-    "version": "2.0.3",
+    "version": "2.0.4",
     "type": "module",
     "scripts": {
         "dev": "bunx --bun vite --host",
@@ -23,6 +23,7 @@
         "@tomtom-international/web-sdk-services": "6.25.0",
         "axios": "1.7.7",
         "firebase-tools": "13.18.0",
+        "js-file-download": "0.4.12",
         "luxon": "3.5.0",
         "react": "18.3.1",
         "react-cropper": "2.3.3",
