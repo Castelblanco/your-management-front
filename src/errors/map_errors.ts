@@ -16,6 +16,7 @@ export const MAP_ERRORS: Record<string, string> = {
 };
 
 export const formatTextError = (err: ApiError): string => {
+    if (err.message === 'Cancel') return '';
     if (err.message === 'VALIDATION') {
         const { metadata } = err;
         return `${MAP_ERRORS[metadata.at]} ${MAP_ERRORS[metadata.message]}`;

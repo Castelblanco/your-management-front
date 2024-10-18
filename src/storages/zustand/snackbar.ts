@@ -20,6 +20,8 @@ export const useSnackbar = create<TSnackbarStore>((set) => ({
         set({ message, open: true });
     },
     setSnackbarError(err) {
-        set({ message: formatTextError(err), open: true });
+        const message = formatTextError(err);
+        if (!message) return;
+        set({ message, open: true });
     },
 }));
