@@ -13,7 +13,7 @@ export const ButtonMenu = (props: TButtonMenuProps) => {
                     borderRadius: '50%',
                 }}
             >
-                <IconButton {...props}>
+                <IconButton {...props} color="inherit">
                     <IconMenu />
                 </IconButton>
             </Box>
