@@ -14,6 +14,8 @@ export const Header = () => {
     const { toggleShow } = useMenu();
     const toggleShowMenu = () => toggleShow();
 
+    const handleHelp = () => open(`/manual%20de%20usuario.pdf`);
+
     return (
         <Paper
             sx={{
@@ -47,7 +49,7 @@ export const Header = () => {
                 justifyContent={'space-between'}
                 width={'150px'}
             >
-                <ButtonHelp tooltip="Ayuda" />
+                <ButtonHelp tooltip="Ayuda" onClick={handleHelp} />
                 <ChangeAppTheme />
                 <Profile />
             </Stack>
