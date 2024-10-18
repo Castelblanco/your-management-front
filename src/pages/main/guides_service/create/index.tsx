@@ -68,6 +68,7 @@ export default function MainGuidesServiceCreate() {
         user: profile,
         clientOrigin: { ...INITIAL_CLIENT_NATURAL },
         clientDestination: { ...INITIAL_CLIENT_NATURAL },
+        pointSaleOrigin: profile.pointSale,
     });
     const [routeId, setRouteId] = useState('');
     const [enableCreate, setEnableCreate] = useState(false);
@@ -220,7 +221,7 @@ export default function MainGuidesServiceCreate() {
             }
 
             if (!guide.pointSaleOrigin || !guide.pointSaleDestination) {
-                return setSnackbar('Datos de Envio Invalidos');
+                return setSnackbar('Datos de Envío Invalidos');
             }
 
             await getRoutePointsSales();

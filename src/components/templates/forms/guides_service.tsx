@@ -265,7 +265,7 @@ export const FormGuidesService = ({
             <Box className={styles.container}>
                 <Card>
                     <Card elevation={0}>
-                        <CardHeader title="Informacion General" />
+                        <CardHeader title="Información General" />
                         <CardContent>
                             <Stack
                                 flexDirection={'row'}
@@ -283,7 +283,7 @@ export const FormGuidesService = ({
                                         disabled={isCreate}
                                         fullWidth
                                     />
-                                    <Stack flexDirection={'row'} gap={1}>
+                                    <Stack flexDirection={'row'} gap={1} marginTop={1}>
                                         <DropDownStatusCode
                                             onChange={onChangeStatus}
                                             value={guide.status?.id}
@@ -565,7 +565,7 @@ export const FormGuidesService = ({
                     </Card>
                     <Divider />
                     <Card elevation={0}>
-                        <CardHeader title="Datos de Envio" />
+                        <CardHeader title="Datos de Envío" />
                         <CardContent>
                             <Stack flexDirection={'row'} gap={1}>
                                 <Stack gap={1} width={'100%'}>
@@ -578,7 +578,7 @@ export const FormGuidesService = ({
                                         loadingText="Buscando"
                                         noOptionsText="Sin Resultados"
                                         fullWidth
-                                        disabled={!isCreate}
+                                        disabled
                                         renderInput={(params) => (
                                             <Input
                                                 {...params}
